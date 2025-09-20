@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/mathplay/static/css/main.bf414b15.css",
-    "main.js": "/mathplay/static/js/main.48940617.js",
+    "main.js": "/mathplay/static/js/main.1d547b55.js",
     "static/js/453.da740c6b.chunk.js": "/mathplay/static/js/453.da740c6b.chunk.js",
     "index.html": "/mathplay/index.html",
     "main.bf414b15.css.map": "/mathplay/static/css/main.bf414b15.css.map",
-    "main.48940617.js.map": "/mathplay/static/js/main.48940617.js.map",
+    "main.1d547b55.js.map": "/mathplay/static/js/main.1d547b55.js.map",
     "453.da740c6b.chunk.js.map": "/mathplay/static/js/453.da740c6b.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.bf414b15.css",
-    "static/js/main.48940617.js"
+    "static/js/main.1d547b55.js"
   ]
 }
