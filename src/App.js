@@ -67,6 +67,39 @@ function usePositiveNegativeToggle() {
     return {isPositive, Button};
 }
 
+// helper: count all valid paths from start to end
+function countValidPaths(grid, start, end, increment) {
+    const n = grid.length;
+    const visited = Array.from({length: n}, () => Array(n).fill(false));
+    let pathCount = 0;
+
+    function dfs(r, c) {
+        if (r === end.row && c === end.col) {
+            pathCount++;
+            return;
+        }
+        visited[r][c] = true;
+
+        const curr = grid[r][c];
+        const dirs = [[1,0],[-1,0],[0,1],[0,-1]];
+        for (let [dr, dc] of dirs) {
+            const nr = r + dr, nc = c + dc;
+            if (nr>=0 && nr<n && nc>=0 && nc<n && !visited[nr][nc]) {
+                const next = grid[nr][nc];
+                if (Math.abs(next - curr) === Math.abs(increment)) {
+                    dfs(nr, nc);
+                    if (pathCount > 1) return; // early exit if more than 1
+                }
+            }
+        }
+        visited[r][c] = false;
+    }
+
+    dfs(start.row, start.col);
+    return pathCount;
+}
+
+
 function App() {
     const n = 10;
     const [theIncrement, setTheIncrement] = useState(100);
@@ -148,8 +181,10 @@ function App() {
                 break;
             }
 
-        } while (Math.abs(cells[cells.length - 1].row - cells[0].row) +
-        Math.abs(cells[cells.length - 1].col - cells[0].col) < 5);
+        } while ((Math.abs(cells[cells.length - 1].row - cells[0].row) +
+        Math.abs(cells[cells.length - 1].col - cells[0].col) < 5)
+            || countValidPaths(nums, {row: cells[0].row, col: cells[0].col}, {row: cells[cells.length-1].row, col: cells[cells.length-1].col}, increment) > 1
+            );
 
         // Place the path numbers in the grid
         cells.forEach(cell => {
