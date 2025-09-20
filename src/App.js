@@ -47,7 +47,7 @@ function usePositiveNegativeToggle() {
     };
 
     const Button = () => {
-        return         <button
+        return <button
             onClick={toggle}
             style={{
                 padding: "10px 20px",
@@ -67,36 +67,24 @@ function usePositiveNegativeToggle() {
     return {isPositive, Button};
 }
 
-// helper: count all valid paths from start to end
-function countValidPaths(grid, start, end, increment) {
-    const n = grid.length;
-    const visited = Array.from({length: n}, () => Array(n).fill(false));
-    let pathCount = 0;
+function shortcut(path) {
+    // any paths touching the cells around the final point?
+    const end = path[path.length - 1];
+    const forbidden = [end, {row: end.row - 1, col: end.col}, {row: end.row + 1, col: end.col}, {
+        row: end.row,
+        col: end.col + 1
+    }, {row: end.row, col: end.col - 1}]
 
-    function dfs(r, c) {
-        if (r === end.row && c === end.col) {
-            pathCount++;
-            return;
-        }
-        visited[r][c] = true;
-
-        const curr = grid[r][c];
-        const dirs = [[1,0],[-1,0],[0,1],[0,-1]];
-        for (let [dr, dc] of dirs) {
-            const nr = r + dr, nc = c + dc;
-            if (nr>=0 && nr<n && nc>=0 && nc<n && !visited[nr][nc]) {
-                const next = grid[nr][nc];
-                if (Math.abs(next - curr) === Math.abs(increment)) {
-                    dfs(nr, nc);
-                    if (pathCount > 1) return; // early exit if more than 1
-                }
+    for (let i = 0; i < path.length - 2; i++) {
+        if (forbidden.some(f => {
+                return f.row === path[i].row && f.col === path[i].col;
             }
+        )) {
+            return true;
         }
-        visited[r][c] = false;
     }
 
-    dfs(start.row, start.col);
-    return pathCount;
+    return false;
 }
 
 
@@ -134,8 +122,8 @@ function App() {
         generateGame();
     }, [n, theIncrement, pathLimitPercent, upDown.isPositive]);
 
-    const increment = theIncrement * (upDown.isPositive?1:-1);
-    
+    const increment = theIncrement * (upDown.isPositive ? 1 : -1);
+
     const generateGame = () => {
         const totalCells = n * n;
         const limit = Math.floor((pathLimitPercent / 100) * totalCells);
@@ -143,20 +131,20 @@ function App() {
         // Empty grid
         let nums = Array.from({length: n}, () => Array(n).fill(null));
 
-        let cells;
-        let cnt=0
+        let path;
+        let cnt = 0
         do {
             // Random starting point and starting value
             let startRow = Math.floor(Math.random() * n);
             let startCol = Math.floor(Math.random() * n);
             const basis = Math.pow(10, Math.floor(Math.log10(Math.abs(increment))) + 1) * (Math.floor(Math.random() * 9) + 1);
-            let startVal = Math.floor(Math.random() * 100) + basis ;
+            let startVal = Math.floor(Math.random() * 100) + basis;
 
             // ---- STEP 1: Build path with strictly increasing values ----
-            cells = [{row: startRow, col: startCol, val: startVal}];
+            path = [{row: startRow, col: startCol, val: startVal}];
 
-            while (cells.length < limit) {
-                let last = cells[cells.length - 1];
+            while (path.length < limit) {
+                let last = path[path.length - 1];
                 let possibleMoves = [
                     {r: last.row - 1, c: last.col},
                     {r: last.row + 1, c: last.col},
@@ -168,7 +156,7 @@ function App() {
                         pos.c >= 0 &&
                         pos.r < n &&
                         pos.c < n &&
-                        !cells.find(cell => cell.row === pos.r && cell.col === pos.c)
+                        !path.find(cell => cell.row === pos.r && cell.col === pos.c)
                 );
 
                 if (possibleMoves.length === 0) break;
@@ -176,20 +164,20 @@ function App() {
                 // Randomly choose NEXT step
                 let nextPos = possibleMoves[Math.floor(Math.random() * possibleMoves.length)];
                 let nextVal = last.val + increment;
-                cells.push({row: nextPos.r, col: nextPos.c, val: nextVal});
+                path.push({row: nextPos.r, col: nextPos.c, val: nextVal});
             }
-            if(++cnt > 100){
+            if (++cnt > 100) {
                 // prevent inf loop when path size impossibly small
                 break;
             }
 
-        } while ((Math.abs(cells[cells.length - 1].row - cells[0].row) +
-        Math.abs(cells[cells.length - 1].col - cells[0].col) < 5)
-            || countValidPaths(nums, {row: cells[0].row, col: cells[0].col}, {row: cells[cells.length-1].row, col: cells[cells.length-1].col}, increment) > 1
+        } while ((Math.abs(path[path.length - 1].row - path[0].row) +
+                Math.abs(path[path.length - 1].col - path[0].col) < 5)
+            || shortcut(path)
             );
 
         // Place the path numbers in the grid
-        cells.forEach(cell => {
+        path.forEach(cell => {
             nums[cell.row][cell.col] = cell.val;
         });
 
@@ -198,7 +186,7 @@ function App() {
             for (let j = 0; j < n; j++) {
                 if (nums[i][j] === null) {
                     // Default decoy near nearby path number
-                    let nearby = cells.reduce((near, c) => {
+                    let nearby = path.reduce((near, c) => {
                         let dist = Math.abs(c.row - i) + Math.abs(c.col - j);
                         if (dist < near.dist) return {dist, val: c.val};
                         return near;
@@ -223,7 +211,7 @@ function App() {
                                 if (adjVal !== null) {
                                     if (Math.abs(adjVal - candidate) === Math.abs(increment)) {
                                         // If that neighbor is on path and this value would form another valid move, reject candidate
-                                        if (cells.find(c => c.row === adj.r && c.col === adj.c)) {
+                                        if (path.find(c => c.row === adj.r && c.col === adj.c)) {
                                             safe = false;
                                         }
                                     }
@@ -238,15 +226,15 @@ function App() {
         }
 
         setGrid(nums);
-        setStart({row: cells[0].row, col: cells[0].col});
-        setEnd({row: cells[cells.length - 1].row, col: cells[cells.length - 1].col});
-        if (cells.length >= 2) {
+        setStart({row: path[0].row, col: path[0].col});
+        setEnd({row: path[path.length - 1].row, col: path[path.length - 1].col});
+        if (path.length >= 2) {
             setPath([
-                {row: cells[0].row, col: cells[0].col},
-                {row: cells[1].row, col: cells[1].col}
+                {row: path[0].row, col: path[0].col},
+                {row: path[1].row, col: path[1].col}
             ]);
         } else {
-            setPath([{row: cells[0].row, col: cells[0].col}]);
+            setPath([{row: path[0].row, col: path[0].col}]);
         }
         setGameOver(false);
         setMistakes([]);
@@ -259,7 +247,7 @@ function App() {
         const existingIndex = path.findIndex(p => p.row === row && p.col === col);
         if (existingIndex >= 0) {
             // Truncate path to this position (even during play)
-            setPath(path.slice(0, Math.max(2, existingIndex + (existingIndex >= path.length-1? 0 : 1  )) ));
+            setPath(path.slice(0, Math.max(2, existingIndex + (existingIndex >= path.length - 1 ? 0 : 1))));
             setGameOver(false);
             setMistakes([]);
             return;
@@ -293,17 +281,17 @@ function App() {
         }
     };
 
-    if(gameOver && mistakes.length === 0  && !gameAutoStarter.isRunning){
+    if (gameOver && mistakes.length === 0 && !gameAutoStarter.isRunning) {
         gameAutoStarter.triggerAutoStart();
         // restart game in a few seconds
     }
 
-    const ngs = '🎮 New Game'  +  (  gameAutoStarter.secondsLeft >0 ? ` in ${gameAutoStarter.secondsLeft} seconds` : '' );
+    const ngs = '🎮 New Game' + (gameAutoStarter.secondsLeft > 0 ? ` in ${gameAutoStarter.secondsLeft} seconds` : '');
 
     return (
         <div className="App">
             <h2>Place Value Maze</h2>
-            <h4>Start at {START} and move {upDown.isPositive ? 'up' : 'down' } increments of {theIncrement} to {END}</h4>
+            <h4>Start at {START} and move {upDown.isPositive ? 'up' : 'down'} increments of {theIncrement} to {END}</h4>
 
             <div className="controls">
                 <label>
@@ -378,8 +366,8 @@ function App() {
                             <div
                                 key={`${row}-${col}`}
                                 {...(isTouchDevice
-                                    ? { onTouchStart: handleClick }
-                                    : { onClick: handleClick })}
+                                    ? {onTouchStart: handleClick}
+                                    : {onClick: handleClick})}
                                 style={{
                                     width: cellSize,
                                     height: cellSize,
@@ -401,13 +389,20 @@ function App() {
                 )}
             </div>
 
-            {gameOver && mistakes.length === 0 && <h4>✅ You did it, great job! New game in: {gameAutoStarter.secondsLeft} seconds</h4>}
+            {gameOver && mistakes.length === 0 &&
+                <h4>✅ You did it, great job! New game in: {gameAutoStarter.secondsLeft} seconds</h4>}
             {gameOver && mistakes.length > 0 && (
                 <h4>⚠️ Mistakes found — click earlier point to fix.</h4>
             )}
 
 
-            <footer style={{ fontSize: "0.8rem", color: "#666", marginTop: "1rem", marginRight: "1em", 'text-align': "right" }}>
+            <footer style={{
+                fontSize: "0.8rem",
+                color: "#666",
+                marginTop: "1rem",
+                marginRight: "1em",
+                'text-align': "right"
+            }}>
                 Build: {buildVersion}
             </footer>
 
