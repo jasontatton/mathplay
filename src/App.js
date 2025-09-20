@@ -101,6 +101,9 @@ function countValidPaths(grid, start, end, increment) {
 
 
 function App() {
+    const buildVersion = process.env.REACT_APP_BUILD_VERSION || "dev";
+
+
     const n = 10;
     const [theIncrement, setTheIncrement] = useState(100);
     const [pathLimitPercent, setPathLimitPercent] = useState(15);
@@ -403,6 +406,12 @@ function App() {
             {gameOver && mistakes.length > 0 && (
                 <h4>⚠️ Mistakes found — click earlier point to fix.</h4>
             )}
+
+
+            <footer style={{ fontSize: "0.8rem", color: "#666", marginTop: "1rem", marginRight: "1em", 'text-align': "right" }}>
+                Build: {buildVersion}
+            </footer>
+
         </div>
     );
 }
