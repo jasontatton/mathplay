@@ -1,0 +1,66 @@
+h4 {
+    text-align: center;
+}
+
+
+.controls {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.controls label {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: #f5f5f5;
+    padding: 6px 10px;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+.controls input {
+    width: 60px;
+    padding: 6px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 16px;
+}
+
+.new-game-btn {
+    padding: 10px 16px;
+    background: linear-gradient(to bottom, #4CAF50, #388E3C);
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    min-width: 120px;
+}
+
+.new-game-btn:hover {
+    background: linear-gradient(to bottom, #45a049, #2e7d32);
+}
+
+.new-game-btn:active {
+    background: #1b5e20;
+}
+
+/* Make inputs easy to tap on mobile */
+@media (max-width: 600px) {
+    .controls label {
+        font-size: 16px;
+        padding: 8px;
+    }
+    .controls input {
+        font-size: 18px;
+        width: 70px;
+    }
+    .new-game-btn {
+        font-size: 18px;
+        padding: 12px 20px;
+    }
+}
