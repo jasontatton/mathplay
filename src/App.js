@@ -101,8 +101,7 @@ function countValidPaths(grid, start, end, increment) {
 
 
 function App() {
-    const buildVersion = process.env.REACT_APP_BUILD_VERSION || "dev";
-
+    const buildVersion = process.env.REACT_APP_BUILD_VERSION || "dev.";
 
     const n = 10;
     const [theIncrement, setTheIncrement] = useState(100);

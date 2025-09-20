@@ -30,6 +30,9 @@ jobs:
       - name: Set build version
         run: echo "REACT_APP_BUILD_VERSION=$(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> $GITHUB_ENV
 
+      - name: Test
+        run: echo REACT_APP_BUILD_VERSION
+
       - name: Build
         run: npm run build
 
