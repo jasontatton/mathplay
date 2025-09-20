@@ -296,6 +296,8 @@ function App() {
         // restart game in a few seconds
     }
 
+    const ngs = '🎮 New Game'  +  (  gameAutoStarter.secondsLeft >0 ? ` in ${gameAutoStarter.secondsLeft} seconds` : '' );
+
     return (
         <div className="App">
             <h2>Place Value Maze</h2>
@@ -322,8 +324,8 @@ function App() {
                         onChange={e => setPathLimitPercent(parseInt(e.target.value))}
                     />
                 </label>
-                <button className="new-game-btn" onClick={generateGame}>
-                    🎮 New Game
+                <button className="new-game-btn" onClick={generateGame} disabled={gameAutoStarter.secondsLeft > 0}>
+                    {ngs}
                 </button>
             </div>
 
