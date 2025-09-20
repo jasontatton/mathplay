@@ -15,7 +15,7 @@
   "homepage": "https://jasontatton.github.io/mathplay",
   "scripts": {
     "start": "react-scripts start",
-    "prebuild": "echo \"REACT_APP_BUILD_VERSION=$(date)\" > .env.build",
+    "prebuild": "echo \"REACT_APP_BUILD_VERSION='$(date)'\" > .env.build",
     "build": "env $(cat .env.build | xargs) react-scripts build",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build",
