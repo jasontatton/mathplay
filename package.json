@@ -17,7 +17,7 @@
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build",
     "start": "react-scripts start",
-    "prebuild": "echo \"\"REACT_APP_BUILD_VERSION=$(date -u +'%Y-%m-%d %H:%M:%S UTC')\" > .env.build",
+    "prebuild": "echo \"REACT_APP_BUILD_VERSION=$(date -u +'%Y-%m-%d %H:%M:%S UTC')\" > .env.build",
     "build": "env $(cat .env.build | xargs) react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
