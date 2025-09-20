@@ -26,7 +26,7 @@ function useNewGameAutoStarter(newGameAction) {
         return () => {
             if (timerRef.current) clearInterval(timerRef.current);
         };
-    }, [isRunning, secondsLeft]);
+    }, [isRunning, secondsLeft, newGameAction]);
 
     // start timer
     const triggerAutoStart = () => {
