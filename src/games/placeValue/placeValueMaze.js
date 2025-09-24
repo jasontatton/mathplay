@@ -1,5 +1,5 @@
-import React, {useEffect, useState, useRef} from "react";
-import "./App.css";
+import React, {useEffect, useRef, useState} from "react";
+import "./placeValueMaze.css";
 
 const START = "🚀";
 const END = "🏁";
@@ -88,9 +88,7 @@ function shortcut(path) {
 }
 
 
-function App() {
-    const buildVersion = process.env.REACT_APP_BUILD_VERSION || "dev.";
-
+function PlaceValueMaze() {
     const n = 10;
     const [theIncrement, setTheIncrement] = useState(100);
     const [pathLimitPercent, setPathLimitPercent] = useState(15);
@@ -138,7 +136,8 @@ function App() {
             let startRow = Math.floor(Math.random() * n);
             let startCol = Math.floor(Math.random() * n);
             const basis = Math.pow(10, Math.floor(Math.log10(Math.abs(increment))) + 1) * (Math.floor(Math.random() * 9) + 1);
-            let startVal = Math.floor(Math.random() * 100) + basis;
+            const startingPlaceValueShift = Math.pow(10, Math.floor(Math.log10(Math.abs(increment))) + 1)
+            let startVal = Math.floor(Math.random() * startingPlaceValueShift) + basis;
 
             // ---- STEP 1: Build path with strictly increasing values ----
             path = [{row: startRow, col: startCol, val: startVal}];
@@ -192,7 +191,7 @@ function App() {
                         return near;
                     }, {dist: Infinity, val: null});
 
-                    let candidate;
+                    let candidate = 0;
                     let safe = false;
 
                     while (!safe) {
@@ -289,8 +288,7 @@ function App() {
     const ngs = '🎮 New Game' + (gameAutoStarter.secondsLeft > 0 ? ` in ${gameAutoStarter.secondsLeft} seconds` : '');
 
     return (
-        <div className="App">
-            <h2>Place Value Maze</h2>
+        <div className="PlaceValueMaze">
             <h4>Start at {START} and move {upDown.isPositive ? 'up' : 'down'} increments of {theIncrement} to {END}</h4>
 
             <div className="controls">
@@ -395,19 +393,8 @@ function App() {
                 <h4>⚠️ Mistakes found — click earlier point to fix.</h4>
             )}
 
-
-            <footer style={{
-                fontSize: "0.8rem",
-                color: "#666",
-                marginTop: "1rem",
-                marginRight: "1em",
-                'text-align': "right"
-            }}>
-                Build: {buildVersion}
-            </footer>
-
         </div>
     );
 }
 
-export default App;
+export default PlaceValueMaze;
