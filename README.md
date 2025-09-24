@@ -1,4 +1,4 @@
-# Getting Started with Create React App
+# Getting Started with Math Play
 
 A few fun math games. Hosted on github pages at [https://jasontatton.github.io/mathplay](https://jasontatton.github.io/mathplay)
 
