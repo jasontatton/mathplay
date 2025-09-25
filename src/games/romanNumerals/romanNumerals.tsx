@@ -83,7 +83,7 @@ const RomanNumerals: React.FC = () => {
 
     return (
         <div style={{padding: 5}}>
-            build the number, or multichoice?
+            heard mode, no showing suffix
             <Popover
                 content={keypadContent}
                 title="Roman Keypad"
