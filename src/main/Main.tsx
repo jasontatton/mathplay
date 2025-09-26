@@ -1,48 +1,22 @@
 import React from 'react';
 import {Route, Routes, useLocation, useNavigate} from 'react-router-dom';
-import {Button, Col, Image, Layout, Row} from 'antd';
+import {Button, Layout} from 'antd';
 
 import rnImg from "../assets/romanNumerals.jpg";
 import plMaze from "../assets/plMaze.jpg";
 import PlaceValueMaze from "../games/placeValue/placeValueMaze";
 import RomanNumerals from "../games/romanNumerals/romanNumerals";
 import {Content, Footer, Header} from "antd/es/layout/layout";
+import {Breadcrumbs} from "./Breadcrumbs";
+import {ButtonPanel} from "./ButtonPanel";
 
-const Home: React.FC = () => {
-    const navigate = useNavigate();
-
-    const buttons = [
-        {label: 'Place Value Maze', image: plMaze, route: '/placeValue/placeValueMaze'},
-        {label: 'Roman Numerals', image: rnImg, route: '/romanNumerals/romanNumerals'},
-    ];
-
-    return (
-        <Row gutter={[16, 16]} justify="center">
-            {buttons.map((btn, index) => (
-                <Col xs={24} sm={12} md={6} key={index}>
-                    <Button
-                        type="primary"
-                        style={{
-                            width: '100%',
-                            height: '200px',
-                            display: 'flex',
-                            flexDirection: 'column',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                        }}
-                        onClick={() => navigate(btn.route)}
-                    >
-                        <Image
-                            src={btn.image}
-                            preview={false}
-                            style={{width: 80, height: 80, marginBottom: 8}}
-                        />
-                        {btn.label}
-                    </Button>
-                </Col>
-            ))}
-        </Row>
-    );
+export const Home: React.FC = () => {
+    return <ButtonPanel pButtons={
+        [
+            {route: '/placeValue/placeValueMaze', image: plMaze},
+            {route: '/romanNumerals/romanNumerals', image: rnImg},
+        ]
+    }/>
 }
 
 const Main: React.FC = () => {
@@ -61,11 +35,12 @@ const Main: React.FC = () => {
                     type="primary"
                     onClick={() => navigate('/mathplay')}
                 >
-                    More Games
+                    Games Home
                 </Button>}
 
             </Header>
 
+            <Breadcrumbs/>
             <Content style={{padding: '10px'}}>
                 <div style={{background: '#fff', padding: 2, minHeight: 360}}>
                     <Routes>
