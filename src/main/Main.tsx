@@ -5,7 +5,7 @@ import {Button, Layout} from 'antd';
 import rnImg from "../assets/romanNumerals.jpg";
 import plMaze from "../assets/plMaze.jpg";
 import PlaceValueMaze from "../games/placeValue/placeValueMaze";
-import RomanNumerals from "../games/romanNumerals/romanNumerals";
+import {HighScore, RomanNumerals} from "../games/romanNumerals/romanNumerals";
 import {Content, Footer, Header} from "antd/es/layout/layout";
 import {Breadcrumbs} from "./Breadcrumbs";
 import {ButtonPanel} from "./ButtonPanel";
@@ -48,6 +48,8 @@ const Main: React.FC = () => {
                         <Route path="/mathplay" element={<Home/>}/>
                         <Route path="/placeValue/placeValueMaze" element={<PlaceValueMaze/>}/>
                         <Route path="/romanNumerals/romanNumerals" element={<RomanNumerals/>}/>
+                        <Route path="/romanNumerals/romanNumerals/stages" element={<PlaceValueMaze/>}/>
+                        <Route path="/romanNumerals/romanNumerals/highscore" element={<HighScore/>}/>
                     </Routes>
                 </div>
             </Content>
