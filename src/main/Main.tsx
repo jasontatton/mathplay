@@ -7,8 +7,8 @@ import plMaze from "../assets/plMaze.jpg";
 import PlaceValueMaze from "../games/placeValue/placeValueMaze";
 import {HighScore, RomanNumerals} from "../games/romanNumerals/romanNumerals";
 import {Content, Footer, Header} from "antd/es/layout/layout";
-import {Breadcrumbs} from "./Breadcrumbs";
-import {ButtonPanel} from "./ButtonPanel";
+import {Breadcrumbs} from "../navigation/Breadcrumbs";
+import {ButtonPanel} from "../navigation/ButtonPanel";
 
 export const Home: React.FC = () => {
     return <ButtonPanel pButtons={

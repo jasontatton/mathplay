@@ -1,7 +1,7 @@
 import React from 'react';
-import RomanKeypad from "./romanKeypad";
+import {DecimalKeypad, Keypad} from "../../utils/Keypad";
 import {Route, Routes} from "react-router-dom";
-import {ButtonPanel} from "../../main/ButtonPanel";
+import {ButtonPanel} from "../../navigation/ButtonPanel";
 import wip from "../../assets/wip.webp";
 
 
@@ -25,8 +25,8 @@ export function HighScore() {
 export const RomanNumerals: React.FC = () => {
     return (
         <div style={{padding: 5}}>
-            <RomanKeypad/>
-
+            <Keypad/>
+            <DecimalKeypad/>
             <Routes>
                 <Route path="/" element={<RomanNumeralsHome/>}/>
             </Routes>

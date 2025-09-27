@@ -1,21 +1,29 @@
 import React, {useState} from 'react';
 import {Button, Input, Popover, Space, Typography} from "antd";
-import {romanToDecimal} from "./romanUtils";
+import {romanToDecimal} from "../games/romanNumerals/utils/roman";
 
 const {Text} = Typography;
 
 // Roman keypad buttons
 const romanSymbols = ["I", "V", "X", "L", "C", "D", "M"];
+const decimalSymbols = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
 
-const RomanKeypad: React.FC = () => {
-    const [romanValue, setRomanValue] = useState("");
+
+type KeyPadProps = {
+    roman: boolean;
+};
+
+export function KeyPad({roman}: KeyPadProps) {
+    const [theValue, setTheValue] = useState("");
     const [error, setError] = useState<string | null>(null);
     const [visible, setVisible] = useState(false);
 
+    const rtext = roman ? 'Roman numeral' : 'decimal';
+
     const validateRoman = (value: string) => {
-        const dec = romanToDecimal(value);
+        const dec = roman ? romanToDecimal(value) : parseInt(value);
         if (value && dec === null) {
-            setError("Invalid Roman numeral format");
+            setError(`Invalid ${rtext} format`);
         } else {
             setError(null);
         }
@@ -23,34 +31,36 @@ const RomanKeypad: React.FC = () => {
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const val = e.target.value.toUpperCase();
-        setRomanValue(val);
+        setTheValue(val);
         validateRoman(val);
     };
 
     const handleSymbolClick = (symbol: string) => {
-        const newValue = romanValue + symbol;
-        setRomanValue(newValue);
+        const newValue = theValue + symbol;
+        setTheValue(newValue);
         validateRoman(newValue);
     };
 
 
     const handleBack = () => {
-        if (romanValue) {
-            const newValue = romanValue.substring(0, romanValue.length - 1);
-            setRomanValue(newValue);
+        if (theValue) {
+            const newValue = theValue.substring(0, theValue.length - 1);
+            setTheValue(newValue);
             validateRoman(newValue);
         }
     };
 
     const handleClear = () => {
-        setRomanValue("");
+        setTheValue("");
         setError(null);
     };
+
+    const symbols = roman ? romanSymbols : decimalSymbols;
 
     const keypadContent = (
         <div style={{width: 220}}>
             <Space wrap style={{marginBottom: 8}}>
-                {romanSymbols.map((symbol) => (
+                {symbols.map((symbol) => (
                     <Button
                         key={symbol}
                         type="default"
@@ -79,13 +89,14 @@ const RomanKeypad: React.FC = () => {
         </div>
     );
 
-    const currentDecimalValue = romanToDecimal(romanValue);
+    const currentDecimalValue = roman ? romanToDecimal(theValue) : parseInt(theValue);
+
+    const isMobile = /Mobi|Android/i.test(navigator.userAgent);
 
     return (
         <div style={{padding: 5}}>
             <Popover
                 content={keypadContent}
-                title="Roman Keypad"
                 trigger="click"
                 placement="bottomLeft"
                 open={visible}
@@ -93,9 +104,9 @@ const RomanKeypad: React.FC = () => {
             >
                 <Input
                     allowClear
-                    value={romanValue}
+                    value={theValue}
                     onChange={handleInputChange}
-                    placeholder="Enter or build Roman numeral"
+                    placeholder={`Enter or build ${rtext}`}
                     style={{
                         maxWidth: 300,
                         color: error ? 'red' : 'black',
@@ -104,14 +115,16 @@ const RomanKeypad: React.FC = () => {
                     }}
 
                     suffix={
-                        !isNaN(currentDecimalValue as number) && currentDecimalValue !== null ? (
-                            <span style={{color: '#999'}}>{currentDecimalValue}</span>
-                        ) : (error && '🤢')
+                        !roman ? undefined :
+                            !isNaN(currentDecimalValue as number) && currentDecimalValue !== null ? (
+                                <span style={{color: '#999'}}>{currentDecimalValue}</span>
+                            ) : (error && '🤢')
                     }
 
-                    readOnly={true} // stops keyboard
+
+                    readOnly={isMobile} // stops keyboard
                     onFocus={(e) => {
-                        if (/Mobi|Android/i.test(navigator.userAgent)) e.target.blur();
+                        if (isMobile) e.target.blur();
                     }}
                 />
             </Popover>
@@ -120,7 +133,13 @@ const RomanKeypad: React.FC = () => {
             {error && <Text type="danger" style={{display: "block"}}>{error}</Text>}
         </div>
     );
-};
+}
+
+export function Keypad() {
+    return <KeyPad roman={true}/>
+}
 
 
-export default RomanKeypad;
+export function DecimalKeypad() {
+    return <KeyPad roman={false}/>
+}

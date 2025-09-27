@@ -1,7 +1,7 @@
 import React from "react";
 import {useNavigate} from "react-router-dom";
 import {Button, Col, Image, Row} from "antd";
-import {Path, PathToName} from "./pathToName";
+import {Path, PathToName} from "./PathToName";
 
 export type PButton = {
     route: Path;

@@ -1,5 +1,5 @@
 import {Link, useLocation} from "react-router-dom";
-import {Path, PathToName} from "./pathToName";
+import {Path, PathToName} from "./PathToName";
 
 export function Breadcrumbs() {
     const location = useLocation();
