@@ -112,7 +112,7 @@ function App() {
                     background: "#f0f2f5"
                 }}
             >
-                <Card style={{width: "100%", maxWidth: 600}} bodyStyle={{padding: 16}}>
+                <Card style={{width: "100%", maxWidth: 800}} bodyStyle={{padding: 16}}>
                     <Space direction="vertical" style={{width: "100%"}} size="large">
                         <Title level={3}>Choose Difficulty</Title>
                         <Select
@@ -144,7 +144,7 @@ function App() {
                 background: "#f0f2f5"
             }}
         >
-            <Card style={{width: "100%", maxWidth: 400}} bodyStyle={{padding: 16}}>
+            <Card style={{width: "100%", maxWidth: 800}} bodyStyle={{padding: 16}}>
                 {!finished ? (
                     <Space direction="vertical" style={{width: "100%"}} size="large">
                         <Progress
