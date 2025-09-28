@@ -107,12 +107,12 @@ function App() {
                     minHeight: "100vh",
                     display: "flex",
                     justifyContent: "center",
-                    alignItems: "center",
+                    alignItems: "top",
                     padding: 16,
                     background: "#f0f2f5"
                 }}
             >
-                <Card style={{width: "100%", maxWidth: 400}} bodyStyle={{padding: 16}}>
+                <Card style={{width: "100%", maxWidth: 600}} bodyStyle={{padding: 16}}>
                     <Space direction="vertical" style={{width: "100%"}} size="large">
                         <Title level={3}>Choose Difficulty</Title>
                         <Select
@@ -139,7 +139,7 @@ function App() {
                 minHeight: "100vh",
                 display: "flex",
                 justifyContent: "center",
-                alignItems: "center",
+                alignItems: "top",
                 padding: 16,
                 background: "#f0f2f5"
             }}
@@ -189,35 +189,37 @@ function App() {
                             })}
                         </div>
 
-                        {selected !== null && (
-                            <>
-                                {selected === currentQuestion.answer ? (
-                                    <Text type="success">✅ Correct!</Text>
-                                ) : (
-                                    <Text type="danger">
-                                        ❌ Wrong — the correct answer is {currentQuestion.answer}
-                                    </Text>
-                                )}
-
-                                {(showExplanation || selected === currentQuestion.answer) && (
-                                    <Button block onClick={() => setShowExplanation((prev) => !prev)}>
-                                        {showExplanation ? "Hide Explanation" : "Show Explanation"}
-                                    </Button>
-                                )}
-
-                                {showExplanation && (
-                                    <Card size="small" style={{backgroundColor: "#fafafa"}}>
-                                        <Text>
-                                            Explanation: {currentQuestion.a} + {currentQuestion.b} = {currentQuestion.answer}
+                        <div style={{minHeight: 140, paddingTop: 8}}>
+                            {selected !== null && (
+                                <>
+                                    {selected === currentQuestion.answer ? (
+                                        <Text type="success">✅ Correct!</Text>
+                                    ) : (
+                                        <Text type="danger">
+                                            ❌ Wrong — the correct answer is {currentQuestion.answer}
                                         </Text>
-                                    </Card>
-                                )}
+                                    )}
 
-                                <Button type="primary" block onClick={handleNext}>
-                                    {currentIndex + 1 === totalQuestions ? "Finish" : "Next"}
-                                </Button>
-                            </>
-                        )}
+                                    {(showExplanation || selected === currentQuestion.answer) && (
+                                        <Button block onClick={() => setShowExplanation((prev) => !prev)}>
+                                            {showExplanation ? "Hide Explanation" : "Show Explanation"}
+                                        </Button>
+                                    )}
+
+                                    {showExplanation && (
+                                        <Card size="small" style={{backgroundColor: "#fafafa"}}>
+                                            <Text>
+                                                Explanation: {currentQuestion.a} + {currentQuestion.b} = {currentQuestion.answer}
+                                            </Text>
+                                        </Card>
+                                    )}
+
+                                    <Button type="primary" block onClick={handleNext}>
+                                        {currentIndex + 1 === totalQuestions ? "Finish" : "Next"}
+                                    </Button>
+                                </>
+                            )}
+                        </div>
                     </Space>
                 ) : (
                     <Space direction="vertical" style={{width: "100%"}} size="large">
@@ -247,7 +249,6 @@ export function Stages() {
 
     return (
         <div style={{padding: 5}}>
-            <Keypad/>
             <App/>
             <DecimalKeypad/>
         </div>
