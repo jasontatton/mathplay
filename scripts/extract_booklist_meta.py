@@ -136,6 +136,7 @@ def main():
     # when most likely found then suppliment books.txt - if can't find one or the wrong one is picked then we need to
     # # get it manually
     # then we can find the asin (amazon magic id for amazon links via a batch tool form the output written to isbn.csv)
+    # https://www.synccentric.com/features/isbn-to-asin/
 
     books = []
     with open("./books.txt", 'r') as f:
@@ -157,7 +158,7 @@ def main():
                 author = parts[0].strip()
                 title = parts[1].strip()
                 isbn = parts[2].strip()
-                asin = parts[2].strip()
+                asin = parts[3].strip()
                 books.append((author, title, isbn, asin))
             else:
                 print(f"Skipping malformed line: {line}")
@@ -175,7 +176,13 @@ def main():
     with open("../src/games/english/book_metadata.json", "w", encoding="utf-8") as f:
         json.dump(results, f, ensure_ascii=False, indent=2)
 
-    print("Results written to book_metadata.json")
+    with open("./books_new.txt", 'w') as f:
+        f.writelines([f"{info['author']}, {info['title']}, {info['isbn']}, {info['asin']}" for info in results])
+
+    with open("./isbns.txt", 'w') as f:
+        f.writelines([info['isbn'] for info in results])
+
+    print("Results written to book_metadata.json, books_new.txt and isbns.txt")
 
     # isbns for batch conversion to
 
