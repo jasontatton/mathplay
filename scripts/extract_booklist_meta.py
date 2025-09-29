@@ -102,7 +102,7 @@ def openlibrary_lookup(title, author):
 
 
 def build_link(isbn):
-    return f'https://books.google.co.uk/books?vid=ISBN{isbn}'
+    return f'https://www.google.co.uk/books?vid=ISBN{isbn}'
 
 
 def get_book_metadata(title, author, isbn):
