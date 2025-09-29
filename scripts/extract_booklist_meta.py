@@ -6,6 +6,8 @@ import requests
 AFFILIATE_TAG = "jtatton-21"  # Amazon Associates tag
 
 
+# Used to generate book_metadata.json from the booklist
+
 def google_books_search(title, author):
     """Query Google Books API and return a dict or None."""
     query = f"{title} {author}"
