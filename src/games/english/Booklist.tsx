@@ -7,7 +7,7 @@ const {Title, Paragraph} = Typography;
 interface Book {
     title: string;
     author: string;
-    image_url?: string;
+    image_url: string | null;
     amazon_link?: string;
     synopsis?: string;
 }
@@ -16,7 +16,7 @@ interface BookListProps {
     books: Book[];
 }
 
-const BookList: React.FC<BookListProps> = ({books}) => {
+const Booklist: React.FC<BookListProps> = ({books}) => {
     const scrollRef = useRef<HTMLDivElement>(null);
     const [showLeft, setShowLeft] = useState(false);
     const [showRight, setShowRight] = useState(false);
@@ -26,7 +26,7 @@ const BookList: React.FC<BookListProps> = ({books}) => {
     const getCardWidth = () => {
         if (window.innerWidth < 768) return window.innerWidth * 0.85;
         if (window.innerWidth < 1024) return window.innerWidth * 0.7;
-        return window.innerWidth * 0.5; // narrower for desktop
+        return window.innerWidth * 0.25; // narrower for desktop
     };
 
     useEffect(() => {
@@ -132,10 +132,10 @@ const BookList: React.FC<BookListProps> = ({books}) => {
                             scrollSnapAlign: "center", // ✅ center snapping
                         }}
                         cover={
-                            book.image_url && (
+                            (
                                 <img
                                     alt={book.title}
-                                    src={book.image_url}
+                                    src={book.image_url || 'https://i.pinimg.com/736x/48/33/cd/4833cd86cb8513aa495099732e4781bf.jpg'}
                                     style={{
                                         width: "100%",
                                         height: "auto",
@@ -202,7 +202,7 @@ const BookList: React.FC<BookListProps> = ({books}) => {
                     style={{
                         position: "absolute",
                         left: 0,
-                        top: "50%",
+                        top: "10%",
                         transform: "translateY(-50%)",
                         backgroundColor: "rgba(255,255,255,0.6)",
                         boxShadow: "0 0 10px rgba(0,0,0,0.2)",
@@ -220,7 +220,7 @@ const BookList: React.FC<BookListProps> = ({books}) => {
                     style={{
                         position: "absolute",
                         right: 0,
-                        top: "50%",
+                        top: "10%",
                         transform: "translateY(-50%)",
                         backgroundColor: "rgba(255,255,255,0.6)",
                         boxShadow: "0 0 10px rgba(0,0,0,0.2)",
@@ -232,4 +232,4 @@ const BookList: React.FC<BookListProps> = ({books}) => {
     );
 };
 
-export default BookList;
+export default Booklist;

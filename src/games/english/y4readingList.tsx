@@ -1,11 +1,11 @@
 import React from "react";
 import bookData from "./book_metadata.json";
-import BookList from "./booklist"; // your JSON file
+import Booklist from "./Booklist"; // your JSON file
 
 const Y4ReadingList: React.FC = () => {
     return (
         <div style={{padding: 20}}>
-            <BookList books={bookData}/>
+            <Booklist books={bookData}/>
         </div>
     );
 };

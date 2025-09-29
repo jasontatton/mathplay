@@ -2,16 +2,20 @@ import json
 import urllib.parse
 
 import requests
+from tqdm import tqdm
 
 AFFILIATE_TAG = "jtatton-21"  # Amazon Associates tag
 
 
 # Used to generate book_metadata.json from the booklist
 
-def google_books_search(title, author):
+def google_books_search(title: str, author: str, isbn: str):
     """Query Google Books API and return a dict or None."""
-    query = f"{title} {author}"
-    url = f"https://www.googleapis.com/books/v1/volumes?q={urllib.parse.quote(query)}"
+
+    if isbn:
+        url = f"https://www.googleapis.com/books/v1/volumes?q=isbn:{urllib.parse.quote(isbn)}"
+    else:
+        url = f"https://www.googleapis.com/books/v1/volumes?q={urllib.parse.quote(f'{title} {author}')}"
     resp = requests.get(url)
     if resp.status_code != 200:
         return None
@@ -88,17 +92,15 @@ def openlibrary_lookup(title, author):
     }
 
 
-def build_amazon_link(isbn):
-    if not isbn:
+def build_amazon_link(asin):
+    if not asin:
         return None
-    asin = isbn
-    # we need the amazon asin which is available programatically via the api (but you can't have access to the API
     return f"https://www.amazon.co.uk/dp/{asin}/ref=nosim?tag={AFFILIATE_TAG}"
 
 
-def get_book_metadata(title, author):
+def get_book_metadata(title, author, isbn, asin):
     # Try Google Books first
-    gb = google_books_search(title, author)
+    gb = google_books_search(title, author, isbn)
     if gb:
         image_url = gb["image_url"]
         isbn = gb["isbn"]
@@ -117,7 +119,7 @@ def get_book_metadata(title, author):
             if not synopsis:
                 synopsis = ol["synopsis"]
 
-    amazon_link = build_amazon_link(isbn)
+    amazon_link = build_amazon_link(asin)
 
     return {
         "title": title,
@@ -129,7 +131,12 @@ def get_book_metadata(title, author):
     }
 
 
-if __name__ == "__main__":
+def main():
+    # if no isbn in books.txt get most likely isbn from google api
+    # when most likely found then suppliment books.txt - if can't find one or the wrong one is picked then we need to
+    # # get it manually
+    # then we can find the asin (amazon magic id for amazon links via a batch tool form the output written to isbn.csv)
+
     books = []
     with open("./books.txt", 'r') as f:
         for line in f:
@@ -140,16 +147,29 @@ if __name__ == "__main__":
             if len(parts) == 2:
                 author = parts[0].strip()
                 title = parts[1].strip()
-                books.append((author, title))
+                books.append((author, title, None, None))
+            if len(parts) == 3:
+                author = parts[0].strip()
+                title = parts[1].strip()
+                isbn = parts[2].strip()
+                books.append((author, title, isbn, None))
+            if len(parts) == 4:
+                author = parts[0].strip()
+                title = parts[1].strip()
+                isbn = parts[2].strip()
+                asin = parts[2].strip()
+                books.append((author, title, isbn, asin))
             else:
                 print(f"Skipping malformed line: {line}")
 
     results = []
 
-    for title, author in books:
-        info = get_book_metadata(title, author)
-        results.append(info)
-        print(f"Got: {info['title']} ({info['isbn']})")
+    for (author, title, isbn, asin) in tqdm(books, desc="Extract metadata", colour="green", leave=False):
+        info = get_book_metadata(title, author, isbn, asin)
+        if info['isbn'] is not None:
+            results.append(info)
+        else:
+            print(f"Failed on: {info['author']} - {info['title']} ")
 
     # Save to JSON
     with open("../src/games/english/book_metadata.json", "w", encoding="utf-8") as f:
@@ -157,32 +177,22 @@ if __name__ == "__main__":
 
     print("Results written to book_metadata.json")
 
-
-def isbn13_to_isbn10(isbn13: str) -> str:
-    """
-    Convert ISBN-13 to ISBN-10.
-    ISBN-13 must start with '978'.
-
-    Returns ISBN-10 string if convertible, else None.
-    """
-    isbn13 = isbn13.replace("-", "").strip()
-    if not isbn13.startswith("978") or len(isbn13) != 13:
-        return None
-
-    core = isbn13[3:12]  # remove '978' prefix and check digit
-    # Calculate ISBN-10 check digit
-    total = sum((10 - i) * int(num) for i, num in enumerate(core, 0))
-    remainder = total % 11
-    check_digit = 11 - remainder
-    if check_digit == 10:
-        check_char = "X"
-    elif check_digit == 11:
-        check_char = "0"
-    else:
-        check_char = str(check_digit)
-
-    return core + check_char
+    # isbns for batch conversion to
 
 
-# Example:
-print(isbn13_to_isbn10("9780008525903"))  # ISBN-10: '0316769487'
+if __name__ == "__main__":
+    main()
+
+Need_to_manually_fix_the_following = '''
+\Failed on: Gillian Cross - The Demon Headmaster 
+/Failed on: Anne Fine - Bill’s New Frock 
+\Failed on: Michael Foreman - War Boy 
+-Failed on: Michelle Harrison - The 13 Treasures etc. 
+\Failed on: Philippa Pearce - A Dog so Small 
+|Failed on: Philip Pullman - I Was a Rat 
+|Failed on: Alan Temperley - Harry and the Wrinklies 
+/Failed on: L. Frank Baum - The Wizard of Oz 
+|Failed on: Frances Hodgson Burnett - The Secret Garden 
+/Failed on: Lewis Carroll - Alice’s Adventures in Wonderland 
+
+'''
