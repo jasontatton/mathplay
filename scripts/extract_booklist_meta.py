@@ -101,13 +101,11 @@ def openlibrary_lookup(title, author):
     }
 
 
-def build_amazon_link(asin):
-    if not asin:
-        return None
-    return f"https://www.amazon.co.uk/dp/{asin}/ref=nosim?tag={AFFILIATE_TAG}"
+def build_link(isbn):
+    return f'https://books.google.co.uk/books?vid=ISBN{isbn}'
 
 
-def get_book_metadata(title, author, isbn, asin):
+def get_book_metadata(title, author, isbn):
     # Try Google Books first
     gb = google_books_search(title, author, isbn)
     if gb:
@@ -128,7 +126,7 @@ def get_book_metadata(title, author, isbn, asin):
             if not synopsis:
                 synopsis = ol["synopsis"]
 
-    amazon_link = build_amazon_link(asin)
+    link = build_link(isbn)
 
     return {
         "title": title,
@@ -136,8 +134,7 @@ def get_book_metadata(title, author, isbn, asin):
         "image_url": image_url,
         "synopsis": synopsis,
         "isbn": isbn,
-        "amazon_link": amazon_link,
-        "asin": asin
+        "link": link,
     }
 
 
@@ -145,8 +142,6 @@ def main():
     # if no isbn in books.txt get most likely isbn from google api
     # when most likely found then suppliment books.txt - if can't find one or the wrong one is picked then we need to
     # # get it manually
-    # then we can find the asin (amazon magic id for amazon links via a batch tool form the output written to isbn.csv)
-    # https://www.synccentric.com/features/isbn-to-asin/
 
     books = []
     with open("./books.txt", 'r') as f:
@@ -158,25 +153,19 @@ def main():
             if len(parts) == 2:
                 author = parts[0].strip()
                 title = parts[1].strip()
-                books.append((author, title, None, None))
+                books.append((author, title, None))
             elif len(parts) == 3:
                 author = parts[0].strip()
                 title = parts[1].strip()
                 isbn = parts[2].strip()
-                books.append((author, title, isbn, None))
-            elif len(parts) == 4:
-                author = parts[0].strip()
-                title = parts[1].strip()
-                isbn = parts[2].strip()
-                asin = parts[3].strip()
-                books.append((author, title, isbn, asin))
+                books.append((author, title, isbn))
             else:
                 print(f"Skipping malformed line: {line}")
 
     results = []
 
-    for (author, title, isbn, asin) in tqdm(books, desc="Extract metadata", colour="green", leave=False):
-        info = get_book_metadata(title, author, isbn, asin)
+    for (author, title, isbn) in tqdm(books, desc="Extract metadata", colour="green", leave=False):
+        info = get_book_metadata(title, author, isbn)
         if info['isbn'] is not None:
             results.append(info)
         else:
@@ -186,30 +175,13 @@ def main():
     with open("../src/games/english/book_metadata.json", "w", encoding="utf-8") as f:
         json.dump(results, f, ensure_ascii=False, indent=2)
 
-    with open("./books_new.txt", 'w') as f:
-        f.writelines([f"{info['author']}, {info['title']}, {info['isbn']}, {info['asin'] or ''}\n" for info in results])
+    with open("./books.txt", 'w') as f:
+        f.writelines([f"{info['author']}, {info['title']}, {info['isbn']}\n" for info in results])
 
-    with open("./isbns_new.txt", 'w') as f:
-        f.writelines([f"{info['isbn']}\n" for info in results])
-
-    print("Results written to book_metadata.json, books_new.txt and isbns.txt")
+    print("Results written to book_metadata.json, books_new.txt")
 
     # isbns for batch conversion to
 
 
 if __name__ == "__main__":
     main()
-
-Need_to_manually_fix_the_following = '''
-\Failed on: Gillian Cross - The Demon Headmaster 
-/Failed on: Anne Fine - Bill’s New Frock 
-\Failed on: Michael Foreman - War Boy 
--Failed on: Michelle Harrison - The 13 Treasures etc. 
-\Failed on: Philippa Pearce - A Dog so Small 
-|Failed on: Philip Pullman - I Was a Rat 
-|Failed on: Alan Temperley - Harry and the Wrinklies 
-/Failed on: L. Frank Baum - The Wizard of Oz 
-|Failed on: Frances Hodgson Burnett - The Secret Garden 
-/Failed on: Lewis Carroll - Alice’s Adventures in Wonderland 
-
-'''

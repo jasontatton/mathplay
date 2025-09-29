@@ -8,7 +8,7 @@ interface Book {
     title: string;
     author: string;
     image_url: string | null;
-    amazon_link: string | null;
+    link: string | null;
     synopsis?: string;
 }
 
@@ -160,7 +160,7 @@ const Booklist: React.FC<BookListProps> = ({books}) => {
                             </Title>
 
                             <Button
-                                href={book.amazon_link || 'https://www.amazon.co.uk'}
+                                href={book.link || 'https://books.google.co.uk/'}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 style={{
@@ -174,9 +174,7 @@ const Booklist: React.FC<BookListProps> = ({books}) => {
                                 }}
                                 size="small"
                                 icon={<LinkOutlined/>}
-                            >
-                                Amazon
-                            </Button>
+                            />
                         </div>
 
                         <Paragraph type="secondary" style={{marginBottom: 8}}>
