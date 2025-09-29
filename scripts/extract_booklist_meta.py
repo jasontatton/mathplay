@@ -12,14 +12,23 @@ AFFILIATE_TAG = "jtatton-21"  # Amazon Associates tag
 def google_books_search(title: str, author: str, isbn: str):
     """Query Google Books API and return a dict or None."""
 
+    urls = []
+
     if isbn:
-        url = f"https://www.googleapis.com/books/v1/volumes?q=isbn:{urllib.parse.quote(isbn)}"
-    else:
-        url = f"https://www.googleapis.com/books/v1/volumes?q={urllib.parse.quote(f'{title} {author}')}"
-    resp = requests.get(url)
+        urls = [f"https://www.googleapis.com/books/v1/volumes?q=isbn:{isbn}", ]
+
+    urls += [f"https://www.googleapis.com/books/v1/volumes?q={urllib.parse.quote(f'{title} {author}')}", ]
+
+    for url in urls:
+        resp = requests.get(url)
+        if resp.status_code != 200:
+            continue
+        data = resp.json()
+        if "items" not in data or len(data["items"]) == 0:
+            continue
+
     if resp.status_code != 200:
         return None
-    data = resp.json()
     if "items" not in data or len(data["items"]) == 0:
         return None
 
@@ -103,7 +112,7 @@ def get_book_metadata(title, author, isbn, asin):
     gb = google_books_search(title, author, isbn)
     if gb:
         image_url = gb["image_url"]
-        isbn = gb["isbn"]
+        isbn = gb["isbn"] or isbn
         synopsis = gb["synopsis"]
     else:
         image_url = isbn = synopsis = None
@@ -115,7 +124,7 @@ def get_book_metadata(title, author, isbn, asin):
             if not image_url:
                 image_url = ol["image_url"]
             if not isbn:
-                isbn = ol["isbn"]
+                isbn = ol["isbn"] or isbn
             if not synopsis:
                 synopsis = ol["synopsis"]
 
