@@ -22,14 +22,13 @@ const BookList: React.FC<BookListProps> = ({books}) => {
     const [showRight, setShowRight] = useState(false);
     const [currentIndex, setCurrentIndex] = useState(1);
 
-    /** Helper: responsive card widths */
+    /** Responsive narrower card width */
     const getCardWidth = () => {
-        if (window.innerWidth < 768) return window.innerWidth * 0.95;
-        if (window.innerWidth < 1024) return window.innerWidth * 0.85;
-        return window.innerWidth * 0.7;
+        if (window.innerWidth < 768) return window.innerWidth * 0.85;
+        if (window.innerWidth < 1024) return window.innerWidth * 0.7;
+        return window.innerWidth * 0.5; // narrower for desktop
     };
 
-    /** Show/hide arrows & update current book index */
     useEffect(() => {
         const container = scrollRef.current;
         if (!container) return;
@@ -40,9 +39,9 @@ const BookList: React.FC<BookListProps> = ({books}) => {
                 container.scrollLeft + container.clientWidth < container.scrollWidth
             );
 
-            const cardWidthWithGap = getCardWidth() + 16; // gap between cards
+            const cardWidthWithGap = getCardWidth() + 16;
             const index =
-                Math.round(container.scrollLeft / cardWidthWithGap) + 1; // +1 human-friendly
+                Math.round(container.scrollLeft / cardWidthWithGap) + 1;
             setCurrentIndex(Math.min(Math.max(index, 1), books.length));
         };
 
@@ -53,19 +52,20 @@ const BookList: React.FC<BookListProps> = ({books}) => {
         };
     }, [books]);
 
-    /** Scroll to a random book on mount */
     useEffect(() => {
         if (scrollRef.current && books.length > 0) {
             const randomIndex = Math.floor(Math.random() * books.length);
             const cardWidthWithGap = getCardWidth() + 16;
             scrollRef.current.scrollTo({
-                left: randomIndex * cardWidthWithGap,
+                left:
+                    randomIndex * cardWidthWithGap -
+                    scrollRef.current.clientWidth / 2 +
+                    cardWidthWithGap / 2,
                 behavior: "smooth",
             });
         }
     }, [books]);
 
-    /** Mouse wheel horizontal scroll for desktop */
     useEffect(() => {
         const container = scrollRef.current;
         if (!container) return;
@@ -81,7 +81,6 @@ const BookList: React.FC<BookListProps> = ({books}) => {
         };
     }, []);
 
-    /** Scroll by one card using arrows */
     const scrollByAmount = (amount: number) => {
         if (scrollRef.current) {
             scrollRef.current.scrollBy({left: amount, behavior: "smooth"});
@@ -92,7 +91,7 @@ const BookList: React.FC<BookListProps> = ({books}) => {
 
     return (
         <div style={{position: "relative"}}>
-            {/* ✅ Overlay: current of total */}
+            {/* Overlay with current book count */}
             <div
                 style={{
                     position: "absolute",
@@ -118,7 +117,7 @@ const BookList: React.FC<BookListProps> = ({books}) => {
                     gap: "16px",
                     alignItems: "flex-start",
                     WebkitOverflowScrolling: "touch",
-                    scrollSnapType: "x proximity",
+                    scrollSnapType: "x mandatory", // mandatory snap
                     padding: "10px",
                 }}
             >
@@ -128,10 +127,9 @@ const BookList: React.FC<BookListProps> = ({books}) => {
                         style={{
                             width: cardWidth,
                             flex: "0 0 auto",
-                            height: "auto",
                             display: "flex",
                             flexDirection: "column",
-                            scrollSnapAlign: "start",
+                            scrollSnapAlign: "center", // ✅ center snapping
                         }}
                         cover={
                             book.image_url && (
@@ -149,7 +147,6 @@ const BookList: React.FC<BookListProps> = ({books}) => {
                             )
                         }
                     >
-                        {/* Title + Amazon button row */}
                         <div
                             style={{
                                 display: "flex",
@@ -196,7 +193,6 @@ const BookList: React.FC<BookListProps> = ({books}) => {
                 ))}
             </div>
 
-            {/* Left Arrow */}
             {showLeft && (
                 <Button
                     shape="circle"
@@ -215,7 +211,6 @@ const BookList: React.FC<BookListProps> = ({books}) => {
                 />
             )}
 
-            {/* Right Arrow */}
             {showRight && (
                 <Button
                     shape="circle"
