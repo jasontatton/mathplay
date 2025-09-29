@@ -8,7 +8,7 @@ interface Book {
     title: string;
     author: string;
     image_url: string | null;
-    amazon_link?: string;
+    amazon_link: string | null;
     synopsis?: string;
 }
 
@@ -158,26 +158,25 @@ const Booklist: React.FC<BookListProps> = ({books}) => {
                             <Title level={4} style={{marginBottom: 0, marginRight: 8}}>
                                 {book.title}
                             </Title>
-                            {book.amazon_link && (
-                                <Button
-                                    href={book.amazon_link}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    style={{
-                                        background: "linear-gradient(90deg, #FF9900, #FFB84D)",
-                                        borderColor: "#FF9900",
-                                        color: "#111",
-                                        fontWeight: "bold",
-                                        borderRadius: 6,
-                                        height: 28,
-                                        padding: "0 10px",
-                                    }}
-                                    size="small"
-                                    icon={<LinkOutlined/>}
-                                >
-                                    Amazon
-                                </Button>
-                            )}
+
+                            <Button
+                                href={book.amazon_link || 'https://www.amazon.co.uk'}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                style={{
+                                    background: "linear-gradient(90deg, #FF9900, #FFB84D)",
+                                    borderColor: "#FF9900",
+                                    color: "#111",
+                                    fontWeight: "bold",
+                                    borderRadius: 6,
+                                    height: 28,
+                                    padding: "0 10px",
+                                }}
+                                size="small"
+                                icon={<LinkOutlined/>}
+                            >
+                                Amazon
+                            </Button>
                         </div>
 
                         <Paragraph type="secondary" style={{marginBottom: 8}}>

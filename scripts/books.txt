@@ -1,137 +1,135 @@
-Philip Ardagh, The Eddie Dickens trilogy
-Rainbow Grey, Laura Ellen Anderson
-Mary Arrigan, The Rabbit Girl
-David Baddiel, AniMalcom
-David Baddiel, The Taylor Turbochaser
-Lynne Reid Banks, Angela and Diabola
-Claire Barker, Knitbone Pepper series
-Sylvia Bishop, The Bookshop Girl
-Joyce Lankester Brisley, Milly-Molly-Mandy series
-Stephanie Burgis, A Most Improper Magick
-Betsy Byars, The Eighteenth Emergency
-Betsy Byars, Midnight Fox
-Georgia Byng, Molly Moon series
-Emma Carroll, Frost Hollow Hall
-Emma Carroll, The Girl Who Walked on Air
-Emma Carroll, The Somerset Tsunami
-Rachel Carter, Ethan’s Voice
-Simon Cheshire, Saxby Smart (Private Detective) series
-Lauren Child, Clarice Bean series
-Lauren Child, Ruby Redfort series
-Beverley Cleary, Ramona series
-Chris Colfer, The Land of Stories series
-Sharon Creech, The Castle Corona
-Helen Cresswell, The Secret World of Polly Flint
-Gillian Cross, The Demon Headmaster
-Roald Dahl, Danny the Champion of the World
-Roald Dahl, Matilda
-Kate DiCamillo, Because of Winn-Dixie
-Kate DiCamillo, The Miraculous Journey of Edward Tulane
-Anne Digby, Trebizon School series
-Tony DiTerlizzi & Holly Black, The Spiderwick Chronicles
-Julia Donaldson, The Giants and the Joneses
-Helen Dunmore, The Lilac Tree trilogy
-Christopher Edge, The Infinite Lives of Maisie Day
-Christopher Edge, Escape Room
-Dorothy Edwards, My Naughty Little Sister series
-Abi Elphinstone, The Dreamsnatcher
-Maz Evans, Who Let the Gods Out?
-Anne Fine, Bill’s New Frock
-Anne Fine, Step by Wicked Step
-
-Patricia Finney, The Lady Grace Mysteries
-Michael Foreman, War Boy
-Sally Gardner, The Smallest Girl Ever
-Sally Gardner, Lucy Willow
-David Gilman, Monkey and Me
-Debi Gliori, Pure Dead Magic series
-Rumer Godden, Miss Happiness and Miss Flower
-Rumer Godden, Little Plum
-Swapna Haddow, Dave Pigeon
-Michelle Harrison, The 13 Treasures etc.
-Michelle Harrison, A Pinch of Magic
-Lenny Henry, The Boy with Wings
-Anthony Horowitz, Granny
-Anthony Horowitz, Groosham Grange
-Anthony Horowitz, Diamond Brothers series
-Erin Hunter, The Warrior Cats series
-Ted Hughes, How the Whale Became and other stories
-Eva Ibbotson, The Secret of Platform 13
-Eva Ibbotson, Which Witch
-Eva Ibbotson, Monster Mission
-Ellie Irving, The Matilda Effect
-Anna James, Pages & Co
-Tove Jansson, Moomin series
-Diana Wynn Jones, Charmed Life
-Erich Kastner, Emil and the Detectives
-Adam Kay, Kay’s brilliant brains
-Liz Kessler, Emily Windsnap series
-Archie Kimpton, Jumble Cat
-Rupert Kingfisher, Madame Pamplemousse series
-Clive King, Stig of the Dump
-Dick King-Smith, The Sheep Pig
-Dick King-Smith, The Queen’s Nose
-Caroline Lawrence, The Thieves of Ostia
-Caroline Lawrence, The Secrets of Vesuvius
-L. D. Lapinski, The Strangeworlds Travel Agency
-Sarah Lean, A Horse for Angel
-Sarah Lean, The Forever Whale
-Joan Lingard, What to do about Holly
-Penelope Lively, Staying with Grandpa
-Ian Mark, Monster Hunting Monsters series
-John Marsden & Shaun Tan, The Rabbits
-Kate Maryon, A Million Angels
-Kate Maryon, Invisible Girl
-Alexander McCall-Smith, Akimbo series
-Geraldine McCaughrean, Tamberlaine’s Elephants
-Cliff McNish, The Doomspell series
-Michael Morpurgo, Why the Whales Came
-Michael Morpurgo, My Friend Walter
-Michael Morpurgo, Dear Olly
-Jill Murphy, The Worst Witch
-Magdelen Nabb, The Stone Mouse
-James Nicol, The Apprentice Witch
-Jenny Nimmo, The Snow Spider
-Jenny Nimmo, The Secret Kingdom series
-Philippa Pearce, The Little Gentleman
-Philippa Pearce, A Dog so Small
-Ann Phillips, Witchy
-Philip Pullman, I Was a Rat
-Philip Pullman, Clockwork
-Louis Sachar, Holes
-S.F.Said, Varjak Paw
-S.F.Said, The Outlaw: Varjak Paw
-Marcus Sedgwick, The Raven Mysteries
-Francesca Simon, The Lost Gods
-Andy Stanton, Mr Gum series
-Robert Swindells, The Ice Palace
-Alan Temperley, Harry and the Wrinklies
-Kate Thompson, Highway Robbers
-Katie & Kevin Tsang, A Dragon Realm Adventure
-Holly Webb, Emily Feather series
-E.B. White, Stuart Little
-E.B. White, Charlotte’s Web
-Ellen Emerson White, My Story series
-Laura Ingalls Wilder, Little House in Big Woods
-Ursula Moray Williams, The Adventures of the Little Wooden Horse
-
-Hans Christian Anderson, Fairy Tales
-L. Frank Baum, The Wizard of Oz
-Lucy Boston, The Children of Green Knowe
-Christianna Brank, The Collected Tales of Nurse Matilda
-Eve Garnett, The Family from One End Street
-Frances Hodgson Burnett, The Secret Garden
-Frances Hodgson Burnett, A Little Princess
-Lewis Carroll, Alice’s Adventures in Wonderland
-Kenneth Grahame, The Wind in the Willows
-Jacob and Wilhelm Grimm, Grimm’s Fairy Tales
-Rudyard Kipling, The Just So Stories
-Rudyard Kipling, The Jungle Book
-C.S. Lewis, The Narnia Chronicles
-Hugh Lofting, The Story of Dr Dolittle
-Edith Nesbit, Five Children and It
-Mary Norton, The Borrowers
-Antoine de Saint-Exupery, The Little Prince
-Dodie Smith, The 101 Dalmatians
-Joanna Spyri, Heidi
-Oscar Wilde, The Happy Prince and Other Tales
+Philip Ardagh, The Eddie Dickens trilogy, 9780571275120,
+Rainbow Grey, Laura Ellen Anderson, 9781405298728,
+Mary Arrigan, The Rabbit Girl, 9781907666926,
+David Baddiel, AniMalcom, 9780008185152,
+David Baddiel, The Taylor Turbochaser, 9780008365387,
+Lynne Reid Banks, Angela and Diabola, 9780380975624,
+Claire Barker, Knitbone Pepper series, 9781474979269,
+Sylvia Bishop, The Bookshop Girl, 9781407179179,
+Joyce Lankester Brisley, Milly-Molly-Mandy series, 9780230743816,
+Stephanie Burgis, A Most Improper Magick, 9781848770072,
+Betsy Byars, The Eighteenth Emergency, 9780099408673,
+Betsy Byars, Midnight Fox, 9780571310340,
+Georgia Byng, Molly Moon series, 9780330399852,
+Emma Carroll, Frost Hollow Hall, 9780571295456,
+Emma Carroll, The Girl Who Walked on Air, 9780571297177,
+Emma Carroll, The Somerset Tsunami, 9780571332823,
+Rachel Carter, Ethan’s Voice, 9781407135502,
+Simon Cheshire, Saxby Smart (Private Detective) series, 9781596434769,
+Lauren Child, Clarice Bean series, 9781408304686,
+Lauren Child, Ruby Redfort series, 9780007334292,
+Beverley Cleary, Ramona series, 9780192750860,
+Chris Colfer, The Land of Stories series, 9781405517911,
+Sharon Creech, The Castle Corona, 9781408848036,
+Helen Cresswell, The Secret World of Polly Flint, 9780689715327,
+Gillian Cross, The Demon Headmaster, 9780192778062,
+Roald Dahl, Danny the Champion of the World, 9780241683439,
+Roald Dahl, Matilda, 9780141929453,
+Kate DiCamillo, Because of Winn-Dixie, 9780763649456,
+Kate DiCamillo, The Miraculous Journey of Edward Tulane, 9780763649425,
+Anne Digby, Trebizon School series, 9781405280648,
+Tony DiTerlizzi & Holly Black, The Spiderwick Chronicles, 9780689875212,
+Julia Donaldson, The Giants and the Joneses, 9781405251587,
+Helen Dunmore, The Lilac Tree trilogy, 9780439977678,
+Christopher Edge, The Infinite Lives of Maisie Day, 9780525646419,
+Christopher Edge, Escape Room, 9781788007955,
+Dorothy Edwards, My Naughty Little Sister series, 9780008726652,
+Abi Elphinstone, The Dreamsnatcher, 9781471122699,
+Maz Evans, Who Let the Gods Out?, 9781910655641,
+Anne Fine, Bill’s New Frock, 9781405285339,
+Anne Fine, Step by Wicked Step, 9780140366471,
+Patricia Finney, The Lady Grace Mysteries, 9780385740050,
+Michael Foreman, War Boy, 9780140342994,
+Sally Gardner, The Smallest Girl Ever, 9781444005769,
+Sally Gardner, Lucy Willow, 9781842557877,
+David Gilman, Monkey and Me, 9781783700349,
+Debi Gliori, Pure Dead Magic series, 9781448172559,
+Rumer Godden, Miss Happiness and Miss Flower, 9781447292753,
+Rumer Godden, Little Plum, 9781447292760,
+Swapna Haddow, Dave Pigeon, 9780571323319,
+Michelle Harrison, The 13 Treasures, 9781471121678,
+Michelle Harrison, A Pinch of Magic, 9781471124303,
+Lenny Henry, The Boy with Wings, 9781524888237,
+Anthony Horowitz, Granny, 9781855496224,
+Anthony Horowitz, Groosham Grange, 9781844241194,
+Anthony Horowitz, Diamond Brothers series, 9780142402986,
+Erin Hunter, The Warrior Cats series, 9780061757310,
+Ted Hughes, How the Whale Became and other stories, 9780571278831,
+Eva Ibbotson, The Secret of Platform 13, 9780330398015,
+Eva Ibbotson, Which Witch, 9780141304274,
+Eva Ibbotson, Monster Mission, 9780330372626,
+Ellie Irving, The Matilda Effect, 9781448171989,
+Anna James, Pages & Co, 9780008229863,
+Tove Jansson, Moomin series, 9781770465510,
+Diana Wynn Jones, Charmed Life, 9780007393930,
+Erich Kastner, Emil and the Detectives, 9781909859104,
+Adam Kay, Kay’s brilliant brains, 9780241624432,
+Liz Kessler, Emily Windsnap series, 9781510104204,
+Archie Kimpton, Jumble Cat, 9781471402791,
+Rupert Kingfisher, Madame Pamplemousse series, 9781408811863,
+Clive King, Stig of the Dump, 9780141329697,
+Dick King-Smith, The Sheep Pig, 9780141302539,
+Dick King-Smith, The Queen’s Nose, 9780141389097,
+Caroline Lawrence, The Thieves of Ostia, 9780142401477,
+Caroline Lawrence, The Secrets of Vesuvius, 9780142401187,
+L. D. Lapinski, The Strangeworlds Travel Agency, 9781534483514,
+Sarah Lean, A Horse for Angel, 9780007455041,
+Sarah Lean, The Forever Whale, 9780007512218,
+Joan Lingard, What to do about Holly, 9781846470905,
+Penelope Lively, Staying with Grandpa, 9780140370324,
+Ian Mark, Monster Hunting Monsters series, 9780008510855,
+John Marsden & Shaun Tan, The Rabbits, 9780734410832,
+Kate Maryon, A Million Angels, 9780007435890,
+Kate Maryon, Invisible Girl, 9780007466917,
+Alexander McCall-Smith, Akimbo series, 9781428103429,
+Geraldine McCaughrean, Tamberlaine’s Elephants, 9780763567088,
+Cliff McNish, The Doomspell series, 9781842554999,
+Michael Morpurgo, Why the Whales Came, 9781780311517,
+Michael Morpurgo, My Friend Walter, 9781780311562,
+Michael Morpurgo, Dear Olly, 9780007375844,
+Jill Murphy, The Worst Witch, 9780141333359,
+Magdelen Nabb, The Stone Mouse, 9780099489894,
+James Nicol, The Apprentice Witch, 9781910655627,
+Jenny Nimmo, The Snow Spider, 9780816722648,
+Jenny Nimmo, The Secret Kingdom series, 9780545537711,
+Philippa Pearce, The Little Gentleman, 9780141318394,
+Philippa Pearce, A Dog so Small, 9780141355191,
+Ann Phillips, Witchy, 9780192751287,
+Philip Pullman, I Was a Rat, 9780241326350,
+Philip Pullman, Clockwork, 9780439856232,
+Louis Sachar, Holes, 9781526634191,
+S.F.Said, Varjak Paw, 9780552548182,
+S.F.Said, The Outlaw: Varjak Paw, 9780552551564,
+Marcus Sedgwick, The Raven Mysteries, 9781407233475,
+Francesca Simon, The Lost Gods, 9781847657794,
+Andy Stanton, Mr Gum series, 9781787531901,
+Robert Swindells, The Ice Palace, 9780141926995,
+Alan Temperley, Harry and the Wrinklies, 9780590113496,
+Kate Thompson, Highway Robbers, 9781862305151,
+Katie & Kevin Tsang, A Dragon Realm Adventure, 9781398523104,
+Holly Webb, Emily Feather series, 9781407146638,
+E.B. White, Stuart Little, 9780064410922,
+E.B. White, Charlotte’s Web, 9780760707258,
+Ellen Emerson White, My Story series, 9781438103242,
+Laura Ingalls Wilder, Little House in Big Woods, 9781479417551,
+Ursula Moray Williams, The Adventures of the Little Wooden Horse, 9781509858187,
+Hans Christian Anderson, Fairy Tales, 9780307777898,
+L. Frank Baum, The Wizard of Oz, 9780241411209,
+Lucy Boston, The Children of Green Knowe, 9780152171476,
+Christianna Brank, The Collected Tales of Nurse Matilda, 9781582346717,
+Eve Garnett, The Family from One End Street, 9780141966656,
+Frances Hodgson Burnett, The Secret Garden, 9780241411162,
+Frances Hodgson Burnett, A Little Princess, 9780439101370,
+Lewis Carroll, Alice’s Adventures in Wonderland, 9789916732687,
+Kenneth Grahame, The Wind in the Willows, 9780307820402,
+Jacob and Wilhelm Grimm, Grimm’s Fairy Tales, 9780307797186,
+Rudyard Kipling, The Just So Stories, 9781405279611,
+Rudyard Kipling, The Jungle Book, 9781387151684,
+C.S. Lewis, The Narnia Chronicles, 9780787997908,
+Hugh Lofting, The Story of Dr Dolittle, 9786257120098,
+Edith Nesbit, Five Children and It, 9798547901515,
+Mary Norton, The Borrowers, 9780547537702,
+Antoine de Saint-Exupery, The Little Prince, 9781853261589,
+Dodie Smith, The 101 Dalmatians, 9780760725139,
+Joanna Spyri, Heidi, 9781528791489,
+Oscar Wilde, The Happy Prince and Other Tales, 9782382260449,

@@ -127,7 +127,8 @@ def get_book_metadata(title, author, isbn, asin):
         "image_url": image_url,
         "synopsis": synopsis,
         "isbn": isbn,
-        "amazon_link": amazon_link
+        "amazon_link": amazon_link,
+        "asin": asin
     }
 
 
@@ -144,17 +145,17 @@ def main():
             line = line.strip()
             if not line:
                 continue  # skip empty lines
-            parts = line.split(",", 1)  # only split on first comma
+            parts = line.split(",")
             if len(parts) == 2:
                 author = parts[0].strip()
                 title = parts[1].strip()
                 books.append((author, title, None, None))
-            if len(parts) == 3:
+            elif len(parts) == 3:
                 author = parts[0].strip()
                 title = parts[1].strip()
                 isbn = parts[2].strip()
                 books.append((author, title, isbn, None))
-            if len(parts) == 4:
+            elif len(parts) == 4:
                 author = parts[0].strip()
                 title = parts[1].strip()
                 isbn = parts[2].strip()
@@ -177,10 +178,10 @@ def main():
         json.dump(results, f, ensure_ascii=False, indent=2)
 
     with open("./books_new.txt", 'w') as f:
-        f.writelines([f"{info['author']}, {info['title']}, {info['isbn']}, {info['asin']}" for info in results])
+        f.writelines([f"{info['author']}, {info['title']}, {info['isbn']}, {info['asin'] or ''}\n" for info in results])
 
-    with open("./isbns.txt", 'w') as f:
-        f.writelines([info['isbn'] for info in results])
+    with open("./isbns_new.txt", 'w') as f:
+        f.writelines([f"{info['isbn']}\n" for info in results])
 
     print("Results written to book_metadata.json, books_new.txt and isbns.txt")
 
