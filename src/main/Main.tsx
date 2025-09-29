@@ -1,8 +1,6 @@
 import React from 'react';
 import {Route, Routes, useLocation, useNavigate} from 'react-router-dom';
 import {Button, Layout} from 'antd';
-
-import rnImg from "../assets/romanNumerals.jpg";
 import plMaze from "../assets/plMaze.jpg";
 import books from "../assets/books.webp";
 import PlaceValueMaze from "../games/placeValue/placeValueMaze";
@@ -18,7 +16,7 @@ export const Home: React.FC = () => {
         <ButtonPanel pButtons={
             [
                 {route: '/placeValue/placeValueMaze', image: plMaze},
-                {route: '/romanNumerals/romanNumerals', image: rnImg},
+                // {route: '/romanNumerals/romanNumerals', image: rnImg},
             ]
         }/>
         <h2>English</h2>
