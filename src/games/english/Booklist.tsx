@@ -191,6 +191,7 @@ const Booklist: React.FC<BookListProps> = ({books}) => {
                         )}
                     </Card>
                 ))}
+                
             </div>
 
             {showLeft && (
