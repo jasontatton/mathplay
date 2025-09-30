@@ -133,17 +133,20 @@ const Booklist: React.FC<BookListProps> = ({books}) => {
                         }}
                         cover={
                             (
-                                <img
-                                    alt={book.title}
-                                    src={book.image_url || 'https://i.pinimg.com/736x/48/33/cd/4833cd86cb8513aa495099732e4781bf.jpg'}
-                                    style={{
-                                        width: "100%",
-                                        height: "auto",
-                                        maxHeight: 300,
-                                        objectFit: "contain",
-                                        backgroundColor: "#fafafa",
-                                    }}
-                                />
+                                < a
+                                    href={book.link || 'https://books.google.co.uk/'}
+                                    target="_blank" rel="noopener noreferrer">
+                                    <img
+                                        alt={book.title}
+                                        src={book.image_url || 'https://i.pinimg.com/736x/48/33/cd/4833cd86cb8513aa495099732e4781bf.jpg'}
+                                        style={{
+                                            width: "100%",
+                                            height: "auto",
+                                            maxHeight: 300,
+                                            objectFit: "contain",
+                                            backgroundColor: "#fafafa",
+                                        }}
+                                    /></a>
                             )
                         }
                     >
