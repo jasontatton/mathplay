@@ -1,5 +1,7 @@
+import {Difficulty, Question} from "../../../common/QuestionCardSeries";
+import {decimalToRoman} from "./roman";
+
 type DifficultyScaler = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
-export type Difficulty = 'Easy' | 'Medium' | 'Hard';
 
 type AnswerRange = [number, number];
 
@@ -9,10 +11,10 @@ const difficultyToScalar: Record<Difficulty, [number, number, AnswerRange]> = {
     'Hard': [7, 10, [1500, 3999]],
 };
 
-type QuestionType = 'romanToDec' | 'decToRoman' | 'romanPlus';
+type RNQuestionType = 'romanToDec' | 'decToRoman' | 'romanPlus';
 
-export type Question = {
-    qType: QuestionType;
+export type RNQuestion = {
+    qType: RNQuestionType;
     multichoice: boolean;
     difficulty: DifficultyScaler;
     answer: number;
@@ -92,8 +94,8 @@ function pickWithWeight<T>(opt1: T, opt2: T, opt3: T, weight: number): T {
     }
 }
 
-export function makeQuestion(howHard: number): Question {
-    let qType: QuestionType;
+export function makeQuestion(howHard: number): RNQuestion {
+    let qType: RNQuestionType;
     if (howHard < hardLowerBound) {
         qType = Math.random() < 0.5 ? 'romanToDec' : 'decToRoman';
     } else {
@@ -106,9 +108,101 @@ export function makeQuestion(howHard: number): Question {
     return {qType, difficulty: howHard as DifficultyScaler, multichoice: Math.random() < 0.5, answer};
 }
 
-export function makeQuestionBank(toMake: number, difficulty: Difficulty): Question[] {
-    const [scalarLow, scalarHigh, _] = difficultyToScalar[difficulty];
 
-    return rangeNInt(scalarLow, scalarHigh, toMake).map(makeQuestion);
+function explainRomanBreakdown(roman: string): string[] {
+    const values: Record<string, number> = {
+        I: 1,
+        V: 5,
+        X: 10,
+        L: 50,
+        C: 100,
+        D: 500,
+        M: 1000
+    };
+
+    let total = 0;
+    const explanation: string[] = [];
+
+    // Scan left to right for pairs
+    let i = 0;
+    while (i < roman.length) {
+        const currentChar = roman[i].toUpperCase();
+        const currentVal = values[currentChar];
+        if (!currentVal) {
+            throw new Error(`Invalid Roman numeral character: ${roman[i]}`);
+        }
+
+        const nextChar = roman[i + 1]?.toUpperCase();
+        const nextVal = nextChar ? values[nextChar] : undefined;
+
+        if (nextVal && currentVal < nextVal) {
+            // Found a subtractive pair
+            const pairValue = nextVal - currentVal;
+            total += pairValue;
+            explanation.push(
+                `${currentChar}${nextChar} means ${nextVal} − ${currentVal} = ${pairValue} → total now ${total}`
+            );
+            i += 2; // Skip both characters
+        } else {
+            // Additive single symbol
+            total += currentVal;
+            explanation.push(
+                `${currentChar} adds ${currentVal} → total now ${total}`
+            );
+            i += 1;
+        }
+    }
+
+    explanation.push(`So final answer is the total: ${total}!`);
+
+    return explanation;
 }
 
+function shuffle<T>(array: T[]): T[] {
+    return array
+        .map(item => ({sortKey: Math.random(), value: item}))
+        .sort((a, b) => a.sortKey - b.sortKey)
+        .map(item => item.value);
+}
+
+export function makeRNQuestionBank(toMake: number, difficulty: Difficulty): Question[] {
+    const [scalarLow, scalarHigh, _] = difficultyToScalar[difficulty];
+
+    return rangeNInt(scalarLow, scalarHigh, toMake).map(diff => {
+        const qq = makeQuestion(diff);
+        qq.qType = 'romanToDec';
+        switch (qq.qType) {
+            case "romanToDec":
+                return {
+                    question: `What is this as a decimal: ${decimalToRoman(qq.answer)}`,
+                    explain: explainRomanBreakdown(decimalToRoman(qq.answer) as string),
+                    answer: qq.answer,
+                    answers: shuffle([qq.answer, 3, 4, 8]),
+                    questionDifficulty: difficulty,
+                }
+            /*case "decToRoman":
+                return {
+                    question: 'Turn this into a deciaml: II',
+                    explain: 'its 2',
+                    answer: 2,
+                    wrong_answers: [3, 4, 6],
+                    questionDifficulty: difficulty,
+                }
+            case "romanPlus":
+                return {
+                    question: 'Turn this into a deciaml: II',
+                    explain: 'its 2',
+                    answer: 2,
+                    wrong_answers: [3, 4, 6],
+                    questionDifficulty: difficulty,
+                }*/
+        }
+    });
+}
+
+//TODO: finish questions, add input selector instead of
+// on easy mode input selector is to show the answer typed in, not for medium and the other one
+// explain function for decimal to roman numerals
+// add trophies progression,
+// add highscore mode
+// see if we can generalize to rounding

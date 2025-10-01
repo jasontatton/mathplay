@@ -3,6 +3,7 @@ import {Route, Routes, useLocation, useNavigate} from 'react-router-dom';
 import {Button, Layout} from 'antd';
 import plMaze from "../assets/plMaze.jpg";
 import books from "../assets/books.webp";
+import rnImg from "../assets/romanNumerals.jpg";
 import PlaceValueMaze from "../games/placeValue/placeValueMaze";
 import {HighScore, RomanNumerals, Stages} from "../games/romanNumerals/romanNumerals";
 import {Content, Footer, Header} from "antd/es/layout/layout";
@@ -16,7 +17,7 @@ export const Home: React.FC = () => {
         <ButtonPanel pButtons={
             [
                 {route: '/placeValue/placeValueMaze', image: plMaze},
-                // {route: '/romanNumerals/romanNumerals', image: rnImg},
+                {route: '/romanNumerals/romanNumerals', image: rnImg},
             ]
         }/>
         <h2>English</h2>
