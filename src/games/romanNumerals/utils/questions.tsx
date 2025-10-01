@@ -63,7 +63,7 @@ function derivedHowHardToAnswerRange() {
 
 const howHardToAnswerRange: Record<number, [number, number, AnswerRange]> = derivedHowHardToAnswerRange()
 
-const [hardLowerBound, hardUpperBound, _ignored] = difficultyToScalar['Hard']
+const [hardLowerBound, hardUpperBound, _] = difficultyToScalar['Hard']
 
 function rangeNInt(a: number, b: number, n: number): number[] {
     if (n <= 1) return [Math.round(a)];
