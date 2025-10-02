@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import {Button, Input, Popover, Space, Typography} from "antd";
 import {romanToDecimal} from "../games/romanNumerals/utils/roman";
 
@@ -9,11 +9,7 @@ const romanSymbols = ["I", "V", "X", "L", "C", "D", "M"];
 const decimalSymbols = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
 
 
-type KeyPadProps = {
-    roman: boolean;
-};
-
-export function KeyPad({roman}: KeyPadProps) {
+export function useKeyPad(roman: boolean, hint: boolean) {
     const [theValue, setTheValue] = useState("");
     const [error, setError] = useState<string | null>(null);
     const [visible, setVisible] = useState(false);
@@ -50,10 +46,14 @@ export function KeyPad({roman}: KeyPadProps) {
         }
     };
 
-    const handleClear = () => {
+    const handleClear = useCallback(() => {
         setTheValue("");
         setError(null);
-    };
+    }, []);
+
+    const handleReset = useCallback(() => {
+        handleClear();
+    }, []);
 
     const symbols = roman ? romanSymbols : decimalSymbols;
 
@@ -93,53 +93,56 @@ export function KeyPad({roman}: KeyPadProps) {
 
     const isMobile = /Mobi|Android/i.test(navigator.userAgent);
 
-    return (
-        <div style={{padding: 5}}>
-            <Popover
-                content={keypadContent}
-                trigger="click"
-                placement="bottomLeft"
-                open={visible}
-                onOpenChange={(v) => setVisible(v)}
-            >
-                <Input
-                    allowClear
-                    value={theValue}
-                    onChange={handleInputChange}
-                    placeholder={`Enter or build ${rtext}`}
-                    style={{
-                        maxWidth: 300,
-                        color: error ? 'red' : 'black',
-                        borderColor: error ? 'red' : undefined,
-                        boxShadow: error ? '0 0 0 2px rgba(255, 0, 0, 0.2)' : undefined
-                    }}
+    const Pad = () => {
+        return (
+            <div style={{padding: 5}}>
+                <Popover
+                    content={keypadContent}
+                    trigger="click"
+                    placement="bottomLeft"
+                    open={visible}
+                    onOpenChange={(v) => setVisible(v)}
+                >
+                    <Input
+                        allowClear
+                        value={theValue}
+                        onChange={handleInputChange}
+                        placeholder={`Enter or build ${rtext}`}
+                        style={{
+                            maxWidth: 300,
+                            color: error ? 'red' : 'black',
+                            borderColor: error ? 'red' : undefined,
+                            boxShadow: error ? '0 0 0 2px rgba(255, 0, 0, 0.2)' : undefined
+                        }}
 
-                    suffix={
-                        !roman ? undefined :
-                            !isNaN(currentDecimalValue as number) && currentDecimalValue !== null ? (
-                                <span style={{color: '#999'}}>{currentDecimalValue}</span>
-                            ) : (error && '🤢')
-                    }
+                        suffix={
+                            (!roman || !hint) ? undefined :
+                                !isNaN(currentDecimalValue as number) && currentDecimalValue !== null ? (
+                                    <span style={{color: '#999'}}>{currentDecimalValue}</span>
+                                ) : (error && '🤢')
+                        }
 
 
-                    readOnly={isMobile} // stops keyboard
-                    onFocus={(e) => {
-                        if (isMobile) e.target.blur();
-                    }}
-                />
-            </Popover>
+                        readOnly={isMobile} // stops keyboard
+                        onFocus={(e) => {
+                            if (isMobile) e.target.blur();
+                        }}
+                    />
+                </Popover>
 
-            {/* Validation/Error feedback */}
-            {error && <Text type="danger" style={{display: "block"}}>{error}</Text>}
-        </div>
-    );
+                {/* Validation/Error feedback */}
+                {error && <Text type="danger" style={{display: "block"}}>{error}</Text>}
+            </div>
+        );
+    };
+    return {theValue, handleReset, Pad}
 }
 
-export function Keypad() {
-    return <KeyPad roman={true}/>
+export function useRomanKeypad(hint: boolean) {
+    return useKeyPad(true, hint);
 }
 
 
-export function DecimalKeypad() {
-    return <KeyPad roman={false}/>
+export function useDecimalKeypad() {
+    return useKeyPad(false, false);
 }

@@ -1,5 +1,4 @@
 import React, {useCallback, useState} from 'react';
-import {DecimalKeypad, Keypad} from "../../utils/Keypad";
 import {Route, Routes} from "react-router-dom";
 import {ButtonPanel} from "../../navigation/ButtonPanel";
 import wip from "../../assets/wip.webp";
@@ -147,8 +146,7 @@ export function Stages() {
 export function HighScore() {
     return (
         <div style={{padding: 5}}>
-            <Keypad/>
-            <DecimalKeypad/>
+            highscore
         </div>
     );
 }

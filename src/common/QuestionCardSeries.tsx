@@ -3,6 +3,7 @@ import React, {useCallback, useState} from "react";
 import {ReloadOutlined, StepBackwardOutlined} from "@ant-design/icons";
 import {Button, Card, Progress, Select, Space, Typography} from "antd";
 import "antd/dist/reset.css";
+import {useDecimalKeypad, useRomanKeypad} from "../utils/Keypad";
 
 const {Title, Text} = Typography;
 
@@ -17,7 +18,7 @@ export type Question = {
 
 
 export type Difficulty = 'Easy' | 'Medium' | 'Hard';
-export type AnswerFormat = 'DecimalInput' | 'RomanNumeralInput';
+export type AnswerFormat = 'DecimalInput' | 'RomanNumeralInput' | 'RomanNumeralInputWithHint';
 
 export function useQuestionCardSeries(origin: string, totalQuestions: number, passMark: number, questionProvider: (difficulty: Difficulty) => Question[], initialDifficulty: Difficulty | undefined) {
     const [questions, setQuestions] = useState<Question[]>(() => {
@@ -33,6 +34,13 @@ export function useQuestionCardSeries(origin: string, totalQuestions: number, pa
     const [finished, setFinished] = useState(false);
     const [difficulty, setDifficulty] = useState<Difficulty>(initialDifficulty || 'Easy');
     const [started, setStarted] = useState(false);
+
+
+    const decimalKeypad = useDecimalKeypad();
+    const romanKeypad = useRomanKeypad(false);
+    const romanKeypadWithHint = useRomanKeypad(true);
+
+    const keypads = [decimalKeypad, romanKeypad, romanKeypadWithHint];
 
 
     const restartGameCallback = useCallback(() => {
@@ -61,6 +69,7 @@ export function useQuestionCardSeries(origin: string, totalQuestions: number, pa
     };
 
     const handleNext = () => {
+        keypads.forEach(key => key.handleReset());
         if ((currentIndex + 1) > questions.length) {
             // we need more questions...
             setQuestions((prev) => [...prev, ...questionProvider(difficulty)]);
@@ -73,6 +82,25 @@ export function useQuestionCardSeries(origin: string, totalQuestions: number, pa
             setShowFinalScreen(true);
         }
     };
+
+    let showKeypad = <div/>;
+    if (currentQuestion.answerFormat !== undefined) {
+        switch (currentQuestion.answerFormat) {
+            case "DecimalInput":
+                showKeypad = <div>{decimalKeypad.Pad()}
+                    <Button type="primary" block onClick={() => handleSelect(Number(decimalKeypad.theValue))}>
+                        Submit
+                    </Button>
+                </div>;
+                break;
+            case "RomanNumeralInputWithHint":
+                showKeypad = romanKeypadWithHint.Pad();
+                break;
+            case "RomanNumeralInput":
+                showKeypad = romanKeypad.Pad();
+                break;
+        }
+    }
 
     const GameRound = () => {
         if (initialDifficulty === undefined && !started) {
@@ -95,8 +123,6 @@ export function useQuestionCardSeries(origin: string, totalQuestions: number, pa
                                 onChange={(value) => setDifficulty(value as Difficulty)}
                                 style={{width: "100%"}}
                             >
-
-
                                 <Select.Option value="easy">Easy (1 - 10)</Select.Option>
                                 <Select.Option value="medium">Medium (1 - 20)</Select.Option>
                                 <Select.Option value="hard">Hard (10 - 50)</Select.Option>
@@ -119,6 +145,7 @@ export function useQuestionCardSeries(origin: string, totalQuestions: number, pa
 
         const markPct = (score / totalQuestions * 100.);
         const victoryText = `Your score: ${score} / ${totalQuestions} (That's ${markPct.toFixed(0)}%) ${markPct >= passMark ? 'Stage complete!' : ` - pass mark is ${passMark}% or above, try again!`}`;
+
 
         return (
             <div
@@ -144,37 +171,40 @@ export function useQuestionCardSeries(origin: string, totalQuestions: number, pa
                             </Title>
                             <Text>{currentQuestion.question}</Text>
 
-                            <div
-                                style={{
-                                    display: "grid",
-                                    gridTemplateColumns: "repeat(2, 1fr)",
-                                    gap: 8
-                                }}
-                            >
-                                {currentQuestion.answers.map((opt, idx) => {
-                                    let style = {};
-                                    if (selected !== null) {
-                                        if (opt === currentQuestion.answer) {
-                                            style = {backgroundColor: "#52c41a", color: "white"}; // green correct
+                            {currentQuestion.answers.length > 0 ? (
+                                <div
+                                    style={{
+                                        display: "grid",
+                                        gridTemplateColumns: "repeat(2, 1fr)",
+                                        gap: 8
+                                    }}
+                                >
+                                    {currentQuestion.answers.map((opt, idx) => {
+                                        let style = {};
+                                        if (selected !== null) {
+                                            if (opt === currentQuestion.answer) {
+                                                style = {backgroundColor: "#52c41a", color: "white"}; // green correct
+                                            }
+                                            if (opt === selected && opt !== currentQuestion.answer) {
+                                                style = {backgroundColor: "#ff4d4f", color: "white"}; // red wrong
+                                            }
                                         }
-                                        if (opt === selected && opt !== currentQuestion.answer) {
-                                            style = {backgroundColor: "#ff4d4f", color: "white"}; // red wrong
-                                        }
-                                    }
 
-                                    return (
-                                        <Button
-                                            key={idx}
-                                            block
-                                            style={{height: 60, fontSize: 18, ...style}}
-                                            disabled={selected !== null}
-                                            onClick={() => handleSelect(opt)}
-                                        >
-                                            {opt}
-                                        </Button>
-                                    );
-                                })}
-                            </div>
+                                        return (
+                                            <Button
+                                                key={idx}
+                                                block
+                                                style={{height: 60, fontSize: 18, ...style}}
+                                                disabled={selected !== null}
+                                                onClick={() => handleSelect(opt)}
+                                            >
+                                                {opt}
+                                            </Button>
+                                        );
+                                    })}
+                                </div>
+                            ) : showKeypad}
+
 
                             <div style={{minHeight: 140, paddingTop: 8}}>
                                 {selected !== null && (

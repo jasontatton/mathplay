@@ -97,7 +97,7 @@ function pickWithWeight<T>(opt1: T, opt2: T, opt3: T, weight: number): T {
 export function makeQuestion(howHard: number): RNQuestion {
     let qType: RNQuestionType;
     if (howHard < hardLowerBound) {
-        qType = Math.random() < 0.5 ? 'romanToDec' : 'decToRoman';
+        qType = randomBoolean() ? 'romanToDec' : 'decToRoman';
     } else {
         qType = pickWithWeight('romanToDec', 'decToRoman', 'romanPlus', howHard)
     }
@@ -105,7 +105,7 @@ export function makeQuestion(howHard: number): RNQuestion {
     const [difficultyLowerBound, difficultyUpperBound, [lowerAnswerRange, upperAnswerRange]] = howHardToAnswerRange[howHard];
     const answer = biasedRandomInRange(lowerAnswerRange, upperAnswerRange, difficultyLowerBound, difficultyUpperBound, howHard);
 
-    return {qType, difficulty: howHard as DifficultyScaler, multichoice: Math.random() < 0.5, answer};
+    return {qType, difficulty: howHard as DifficultyScaler, multichoice: randomBoolean(), answer};
 }
 
 
@@ -167,13 +167,17 @@ function shuffle<T>(array: T[]): T[] {
 
 const max_attempts = 100; // jsut in case
 
+function randomBoolean(): boolean {
+    return Math.random() < 0.5;
+}
+
 function derive3BogusAnswers(answer: number): number[] {
-    function genWithRetry(func : () => number){
+    function genWithRetry(func: () => number) {
         let attempt = func()
         let cnt = 0;
-        while (attempt <= 0 || attempt == answer){
+        while (attempt <= 0 || attempt == answer || attempt > 3999) {
             attempt = func()
-            if(cnt++ > max_attempts){
+            if (cnt++ > max_attempts) {
                 break;
             }
         }
@@ -181,7 +185,15 @@ function derive3BogusAnswers(answer: number): number[] {
         return attempt;
     }
 
-    const offByOne = genWithRetry( () =>  )
+    function randomUpToYPercentOff(pct: number, minPctOff?: number): number {
+        const min = answer * (1. + ((minPctOff || 100) / 100.));
+        const max = answer * (1. + (pct / 100.));
+        return Math.floor(Math.random() * (max - min + 1) + min) * (randomBoolean() ? -1 : 1);
+    }
+
+    const offByOne = genWithRetry(() => (Math.floor(Math.random() * 4) + 1) * (randomBoolean() ? -1 : 1))
+    const closeOne = genWithRetry(() => randomUpToYPercentOff(20))
+    const sillyOne = genWithRetry(() => randomUpToYPercentOff(150, 50))
 
     return [offByOne, closeOne, sillyOne]
 
@@ -195,32 +207,37 @@ export function makeRNQuestionBank(toMake: number, difficulty: Difficulty): Ques
         qq.qType = 'romanToDec';
         switch (qq.qType) {
             case "romanToDec":
+
                 return {
                     question: `What is this as a decimal: ${decimalToRoman(qq.answer)}`,
                     explain: explainRomanBreakdown(decimalToRoman(qq.answer) as string),
                     answer: qq.answer,
-                    answers: shuffle([qq.answer, 3, 4, 8]),
+                    answers: qq.multichoice ? shuffle([...derive3BogusAnswers(qq.answer), qq.answer]) : [],
                     questionDifficulty: difficulty,
+                    answerFormat: qq.multichoice ? undefined : 'DecimalInput'
                 }
             /*case "decToRoman":
                 return {
-                    question: 'Turn this into a deciaml: II',
-                    explain: 'its 2',
-                    answer: 2,
-                    wrong_answers: [3, 4, 6],
+                    question: `What is this as a roman numeral: ${qq.answer}`,
+                    explain: explainRomanBreakdown(decimalToRoman(qq.answer) as string),
+                    answer: qq.answer,
+                    answers: shuffle([...derive3BogusAnswers(qq.answer), qq.answer]),
                     questionDifficulty: difficulty,
                 }
             case "romanPlus":
                 return {
-                    question: 'Turn this into a deciaml: II',
-                    explain: 'its 2',
-                    answer: 2,
-                    wrong_answers: [3, 4, 6],
+                    question: `What is this as a decimal: ${decimalToRoman(qq.answer)}`,
+                    explain: explainRomanBreakdown(decimalToRoman(qq.answer) as string),
+                    answer: qq.answer,
+                    answers: shuffle([...derive3BogusAnswers(qq.answer), qq.answer]),
                     questionDifficulty: difficulty,
                 }*/
         }
     });
 }
+
+//handle submit on keypad, handle disabvle changes post answer shown
+//focus on decToRoman
 
 //TODO: finish questions, add input selector instead of
 // on easy mode input selector is to show the answer typed in, not for medium and the other one
