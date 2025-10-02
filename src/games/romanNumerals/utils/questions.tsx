@@ -165,6 +165,28 @@ function shuffle<T>(array: T[]): T[] {
         .map(item => item.value);
 }
 
+const max_attempts = 100; // jsut in case
+
+function derive3BogusAnswers(answer: number): number[] {
+    function genWithRetry(func : () => number){
+        let attempt = func()
+        let cnt = 0;
+        while (attempt <= 0 || attempt == answer){
+            attempt = func()
+            if(cnt++ > max_attempts){
+                break;
+            }
+        }
+
+        return attempt;
+    }
+
+    const offByOne = genWithRetry( () =>  )
+
+    return [offByOne, closeOne, sillyOne]
+
+}
+
 export function makeRNQuestionBank(toMake: number, difficulty: Difficulty): Question[] {
     const [scalarLow, scalarHigh, _] = difficultyToScalar[difficulty];
 
