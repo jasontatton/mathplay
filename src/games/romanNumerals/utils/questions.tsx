@@ -204,10 +204,9 @@ export function makeRNQuestionBank(toMake: number, difficulty: Difficulty): Ques
 
     return rangeNInt(scalarLow, scalarHigh, toMake).map(diff => {
         const qq = makeQuestion(diff);
-        qq.qType = 'romanToDec';
+        //qq.qType = 'romanToDec';
         switch (qq.qType) {
             case "romanToDec":
-
                 return {
                     question: `What is this as a decimal: ${decimalToRoman(qq.answer)}`,
                     explain: explainRomanBreakdown(decimalToRoman(qq.answer) as string),
@@ -216,22 +215,24 @@ export function makeRNQuestionBank(toMake: number, difficulty: Difficulty): Ques
                     questionDifficulty: difficulty,
                     answerFormat: qq.multichoice ? undefined : 'DecimalInput'
                 }
-            /*case "decToRoman":
+            case "decToRoman":
                 return {
                     question: `What is this as a roman numeral: ${qq.answer}`,
                     explain: explainRomanBreakdown(decimalToRoman(qq.answer) as string),
                     answer: qq.answer,
-                    answers: shuffle([...derive3BogusAnswers(qq.answer), qq.answer]),
+                    answers: qq.multichoice ? shuffle([...derive3BogusAnswers(qq.answer), qq.answer]) : [],
                     questionDifficulty: difficulty,
+                    answerFormat: qq.multichoice ? undefined : (difficulty === 'Easy' ? 'RomanNumeralInputWithHint' : 'RomanNumeralInput'),
                 }
             case "romanPlus":
                 return {
-                    question: `What is this as a decimal: ${decimalToRoman(qq.answer)}`,
+                    question: `What is this as a roman numeral: ${qq.answer}`,
                     explain: explainRomanBreakdown(decimalToRoman(qq.answer) as string),
                     answer: qq.answer,
-                    answers: shuffle([...derive3BogusAnswers(qq.answer), qq.answer]),
+                    answers: qq.multichoice ? shuffle([...derive3BogusAnswers(qq.answer), qq.answer]) : [],
                     questionDifficulty: difficulty,
-                }*/
+                    answerFormat: qq.multichoice ? undefined : 'DecimalInput'
+                }
         }
     });
 }

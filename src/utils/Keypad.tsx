@@ -13,6 +13,7 @@ export function useKeyPad(onSelect: (opt: number) => void, roman: boolean, hint:
     const [theValue, setTheValue] = useState("");
     const [error, setError] = useState<string | null>(null);
     const [visible, setVisible] = useState(false);
+    const [disabled, setDisabled] = useState(false);
 
     const rtext = roman ? 'Roman numeral' : 'decimal';
 
@@ -49,6 +50,7 @@ export function useKeyPad(onSelect: (opt: number) => void, roman: boolean, hint:
     const handleClear = useCallback(() => {
         setTheValue("");
         setError(null);
+        setDisabled(false);
     }, []);
 
     const handleReset = useCallback(() => {
@@ -56,6 +58,16 @@ export function useKeyPad(onSelect: (opt: number) => void, roman: boolean, hint:
     }, []);
 
     const symbols = roman ? romanSymbols : decimalSymbols;
+
+    const disable = useCallback(() => {
+        setDisabled(true);
+    }, []);
+
+    function onSubmit() {
+        disable();
+        onSelect(roman ? romanToDecimal(theValue) || 0 : Number(theValue));
+        setVisible(false);
+    }
 
     const keypadContent = (
         <div style={{width: 220}}>
@@ -81,10 +93,7 @@ export function useKeyPad(onSelect: (opt: number) => void, roman: boolean, hint:
                 <Button
                     type="primary"
                     block
-                    onClick={() => {
-                        onSelect(roman ? romanToDecimal(theValue) || 0 : Number(theValue));
-                        setVisible(false);
-                    }}
+                    onClick={onSubmit}
                 >
                     Submit
                 </Button>
@@ -118,6 +127,8 @@ export function useKeyPad(onSelect: (opt: number) => void, roman: boolean, hint:
                             boxShadow: error ? '0 0 0 2px rgba(255, 0, 0, 0.2)' : undefined
                         }}
 
+                        disabled={disabled}
+
                         suffix={
                             (!roman || !hint) ? undefined :
                                 !isNaN(currentDecimalValue as number) && currentDecimalValue !== null ? (
@@ -125,6 +136,7 @@ export function useKeyPad(onSelect: (opt: number) => void, roman: boolean, hint:
                                 ) : (error && '🤢')
                         }
 
+                        onPressEnter={onSubmit}
 
                         readOnly={isMobile} // stops keyboard
                         onFocus={(e) => {
@@ -138,7 +150,7 @@ export function useKeyPad(onSelect: (opt: number) => void, roman: boolean, hint:
             </div>
         );
     };
-    return {theValue, handleReset, Pad}
+    return {theValue, handleReset, Pad, disable}
 }
 
 export function useRomanKeypad(onSelect: (opt: number) => void, hint: boolean) {

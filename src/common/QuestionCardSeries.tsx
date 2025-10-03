@@ -36,8 +36,11 @@ export function useQuestionCardSeries(origin: string, totalQuestions: number, pa
     const [started, setStarted] = useState(false);
 
     const handleSelect = useCallback((opt: number) => {
+        keypads.forEach(x => x.disable());
         setSelected(opt);
-        if (opt === currentQuestion.answer) {
+        // eslint-disable-next-line eqeqeq
+        if (opt == currentQuestion.answer) {
+            console.log(`so +1 score`);
             setScore((prev) => prev + 1);
         }
     }, []);
