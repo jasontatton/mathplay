@@ -9,7 +9,7 @@ const romanSymbols = ["I", "V", "X", "L", "C", "D", "M"];
 const decimalSymbols = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
 
 
-export function useKeyPad(roman: boolean, hint: boolean) {
+export function useKeyPad(onSelect: (opt: number) => void, roman: boolean, hint: boolean) {
     const [theValue, setTheValue] = useState("");
     const [error, setError] = useState<string | null>(null);
     const [visible, setVisible] = useState(false);
@@ -81,9 +81,12 @@ export function useKeyPad(roman: boolean, hint: boolean) {
                 <Button
                     type="primary"
                     block
-                    onClick={() => setVisible(false)}
+                    onClick={() => {
+                        onSelect(roman ? romanToDecimal(theValue) || 0 : Number(theValue));
+                        setVisible(false);
+                    }}
                 >
-                    Close
+                    Submit
                 </Button>
             </Space>
         </div>
@@ -138,11 +141,11 @@ export function useKeyPad(roman: boolean, hint: boolean) {
     return {theValue, handleReset, Pad}
 }
 
-export function useRomanKeypad(hint: boolean) {
-    return useKeyPad(true, hint);
+export function useRomanKeypad(onSelect: (opt: number) => void, hint: boolean) {
+    return useKeyPad(onSelect, true, hint);
 }
 
 
-export function useDecimalKeypad() {
-    return useKeyPad(false, false);
+export function useDecimalKeypad(onSelect: (opt: number) => void) {
+    return useKeyPad(onSelect, false, false);
 }

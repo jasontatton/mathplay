@@ -35,10 +35,16 @@ export function useQuestionCardSeries(origin: string, totalQuestions: number, pa
     const [difficulty, setDifficulty] = useState<Difficulty>(initialDifficulty || 'Easy');
     const [started, setStarted] = useState(false);
 
+    const handleSelect = useCallback((opt: number) => {
+        setSelected(opt);
+        if (opt === currentQuestion.answer) {
+            setScore((prev) => prev + 1);
+        }
+    }, []);
 
-    const decimalKeypad = useDecimalKeypad();
-    const romanKeypad = useRomanKeypad(false);
-    const romanKeypadWithHint = useRomanKeypad(true);
+    const decimalKeypad = useDecimalKeypad(handleSelect);
+    const romanKeypad = useRomanKeypad(handleSelect, false);
+    const romanKeypadWithHint = useRomanKeypad(handleSelect, true);
 
     const keypads = [decimalKeypad, romanKeypad, romanKeypadWithHint];
 
@@ -61,12 +67,6 @@ export function useQuestionCardSeries(origin: string, totalQuestions: number, pa
 
     const currentQuestion = questions[currentIndex];
 
-    const handleSelect = (opt: number) => {
-        setSelected(opt);
-        if (opt === currentQuestion.answer) {
-            setScore((prev) => prev + 1);
-        }
-    };
 
     const handleNext = () => {
         keypads.forEach(key => key.handleReset());
@@ -83,14 +83,20 @@ export function useQuestionCardSeries(origin: string, totalQuestions: number, pa
         }
     };
 
+    const theKeyPadButton = (value: number) => {
+        return <Button type="primary" disabled={selected !== null} block
+                       onClick={() => handleSelect(value)}>
+            Submit
+        </Button>
+
+    }
+
     let showKeypad = <div/>;
     if (currentQuestion.answerFormat !== undefined) {
         switch (currentQuestion.answerFormat) {
             case "DecimalInput":
                 showKeypad = <div>{decimalKeypad.Pad()}
-                    <Button type="primary" block onClick={() => handleSelect(Number(decimalKeypad.theValue))}>
-                        Submit
-                    </Button>
+                    {theKeyPadButton(Number(decimalKeypad.theValue))}
                 </div>;
                 break;
             case "RomanNumeralInputWithHint":
