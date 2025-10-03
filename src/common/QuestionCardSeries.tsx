@@ -86,31 +86,17 @@ export function useQuestionCardSeries(origin: string, totalQuestions: number, pa
         }
     };
 
-    const theKeyPadButton = (value: number | string) => {
-        return <Button type="primary" disabled={selected !== null} block
-                       onClick={() => handleSelect(value)}>
-            Submit--submit seems not to work
-        </Button>
-
-    }
-
     let showKeypad = <div/>;
     if (currentQuestion.answerFormat !== undefined) {
         switch (currentQuestion.answerFormat) {
             case "DecimalInput":
-                showKeypad = <div>{decimalKeypad.Pad()}
-                    {theKeyPadButton(Number(decimalKeypad.theValue))}
-                </div>;
+                showKeypad = decimalKeypad.Pad();
                 break;
             case "RomanNumeralInputWithHint":
-                showKeypad = <div>{romanKeypadWithHint.Pad()}
-                    {theKeyPadButton(decimalKeypad.theValue)}
-                </div>;
+                showKeypad = romanKeypadWithHint.Pad();
                 break;
             case "RomanNumeralInput":
-                showKeypad = <div>{romanKeypad.Pad()}
-                    {theKeyPadButton(decimalKeypad.theValue)}
-                </div>;
+                showKeypad = romanKeypad.Pad();
                 break;
         }
     }

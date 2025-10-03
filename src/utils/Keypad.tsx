@@ -147,9 +147,16 @@ export function useKeyPad(onSelect: (opt: number | string) => void, roman: boole
 
                 {/* Validation/Error feedback */}
                 {error && <Text type="danger" style={{display: "block"}}>{error}</Text>}
+
+                <Button type="primary" disabled={disabled} block
+                        onClick={() => onSelect(theValue)}>
+                    Submit
+                </Button>
+
             </div>
         );
     };
+
     return {theValue, handleReset, Pad, disable}
 }
 

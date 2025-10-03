@@ -108,6 +108,58 @@ export function makeQuestion(howHard: number): RNQuestion {
     return {qType, difficulty: howHard as DifficultyScaler, multichoice: randomBoolean(), answer};
 }
 
+function explainDecimalToRoman(num: number): string[] {
+    const val: number[] = [
+        1000, 900, 500, 400,
+        100, 90, 50, 40,
+        10, 9, 5, 4,
+        1
+    ];
+
+    const syms: string[] = [
+        "M", "CM", "D", "CD",
+        "C", "XC", "L", "XL",
+        "X", "IX", "V", "IV",
+        "I"
+    ];
+
+    let explanation: string[] = [];
+    let romanNum: string = "";
+    let i: number = 0;
+    const original = num;
+
+    explanation.push(`Converting ${original} into Roman numerals:`);
+
+    while (num > 0) {
+        let count = Math.floor(num / val[i]);
+
+        if (count > 0) {
+            if (["IV", "IX", "XL", "XC", "CD", "CM"].includes(syms[i])) {
+                // Subtractive notation explanation
+                const base = syms[i][1];    // e.g. "X" in "IX"
+                const smaller = syms[i][0]; // e.g. "I" in "IX"
+                explanation.push(
+                    `- ${val[i]} is written as '${syms[i]}'. ` +
+                    `This is subtractive notation: '${smaller}' before '${base}' means ${base} - ${smaller}.`
+                );
+            } else {
+                // Normal additive explanation
+                explanation.push(
+                    `- ${val[i]} fits into ${num} → add '${syms[i]}' ${count} time(s).`
+                );
+            }
+
+            romanNum += syms[i].repeat(count);
+            num -= val[i] * count;
+            explanation.push(`  Remaining value: ${num}`);
+        }
+
+        i++;
+    }
+
+    explanation.push(`Final Roman numeral: ${romanNum} <- this is our answer`);
+    return explanation;
+}
 
 function explainRomanBreakdown(roman: string): string[] {
     const values: Record<string, number> = {
@@ -153,7 +205,7 @@ function explainRomanBreakdown(roman: string): string[] {
         }
     }
 
-    explanation.push(`So final answer is the total: ${total}!`);
+    explanation.push(`Which gives us the total: ${total}`);
 
     return explanation;
 }
@@ -199,41 +251,76 @@ function derive3BogusAnswers(answer: number): number[] {
 
 }
 
+
+function randomBiasedNumber(maxValue: number, bias: number): number {
+    // Clamp bias between 1 and 10
+    bias = Math.max(1, Math.min(10, bias));
+
+    // Map bias [1, 10] to exponent range
+    // bias=1 → 3 (skew low), bias=5 → 1 (uniform), bias=10 → 0.3 (skew high)
+    const exponent = 3 - ((bias - 1) / 9) * (3 - 0.3);
+
+    // Random number between 0 and 1, skewed by exponent
+    const rand = Math.random() ** exponent;
+
+    // Scale result into [1, maxValue]
+    return Math.floor(rand * (maxValue - 1)) + 1;
+}
+
 export function makeRNQuestionBank(toMake: number, difficulty: Difficulty): Question[] {
     const [scalarLow, scalarHigh, _] = difficultyToScalar[difficulty];
 
     return rangeNInt(scalarLow, scalarHigh, toMake).map(diff => {
         const qq = makeQuestion(diff);
-        qq.qType = 'decToRoman';
+
         switch (qq.qType) {
             case "decToRoman":
                 return {
                     question: `What is this as a roman numeral: ${qq.answer}`,
-                    explain: explainRomanBreakdown(decimalToRoman(qq.answer) as string),
+                    explain: explainDecimalToRoman(qq.answer),
                     answer: decimalToRoman(qq.answer) || "?",
                     answers: qq.multichoice ? shuffle([...derive3BogusAnswers(qq.answer), qq.answer].map(x => (decimalToRoman(x) || "?"))) : [],
                     questionDifficulty: difficulty,
                     answerFormat: qq.multichoice ? undefined : (difficulty === 'Easy' ? 'RomanNumeralInputWithHint' : 'RomanNumeralInput'),
                 }
-            /*case "romanToDec":
-               return {
-                   question: `What is this as a decimal: ${decimalToRoman(qq.answer)}`,
-                   explain: explainRomanBreakdown(decimalToRoman(qq.answer) as string),
-                   answer: qq.answer,
-                   answers: qq.multichoice ? shuffle([...derive3BogusAnswers(qq.answer), qq.answer]) : [],
-                   questionDifficulty: difficulty,
-                   answerFormat: qq.multichoice ? undefined : 'DecimalInput'
-               }
+            case "romanToDec":
+                return {
+                    question: `What is this as a decimal: ${decimalToRoman(qq.answer)}`,
+                    explain: explainRomanBreakdown(decimalToRoman(qq.answer) as string),
+                    answer: qq.answer,
+                    answers: qq.multichoice ? shuffle([...derive3BogusAnswers(qq.answer), qq.answer]) : [],
+                    questionDifficulty: difficulty,
+                    answerFormat: qq.multichoice ? undefined : 'DecimalInput'
+                }
+            case "romanPlus":
+                const ans = qq.answer;
+                // harder questions have answers which have lhs and rhs which are closer to 50% of the answer
+                let lhs = randomBiasedNumber(50, diff);
+                let rhs = ans - lhs;
+                if (randomBoolean()) {
+                    //swap
+                    const tmp = rhs;
+                    rhs = lhs;
+                    lhs = tmp
+                }
 
-           case "romanPlus":
-               return {
-                   question: `asdasdasd: ${qq.answer}`,
-                   explain: explainRomanBreakdown(decimalToRoman(qq.answer) as string),
-                   answer: qq.answer,
-                   answers: qq.multichoice ? shuffle([...derive3BogusAnswers(qq.answer), qq.answer]) : [],
-                   questionDifficulty: difficulty,
-                   answerFormat: qq.multichoice ? undefined : 'DecimalInput'
-               }*/
+                const explain = [
+                    'First we turn the left hand side into a decimal:',
+                    ...explainRomanBreakdown(decimalToRoman(lhs) as string).map(x => `• ${x}`),
+                    'Then we turn the right hand side into a decimal:',
+                    ...explainRomanBreakdown(decimalToRoman(rhs) as string).map(x => `• ${x}`),
+                    `Now we add: ${lhs} + ${rhs} => ${ans} and turn this into a roman Numeral:`,
+                    ...explainDecimalToRoman(qq.answer).map(x => ` ${x}`).map(x => `• ${x}`)
+                ]
+
+                return {
+                    question: `What is ${decimalToRoman(lhs)} + ${decimalToRoman(rhs)} as a roman Numeral?`,
+                    explain,
+                    answer: decimalToRoman(qq.answer) || "?",
+                    answers: qq.multichoice ? shuffle([...derive3BogusAnswers(qq.answer), qq.answer].map(x => (decimalToRoman(x) || "?"))) : [],
+                    questionDifficulty: difficulty,
+                    answerFormat: qq.multichoice ? undefined : (difficulty === 'Easy' ? 'RomanNumeralInputWithHint' : 'RomanNumeralInput'),
+                }
         }
     });
 }
