@@ -10,8 +10,8 @@ const {Title, Text} = Typography;
 export type Question = {
     question: string;
     explain: string[];
-    answer: number;
-    answers: number[];
+    answer: number | string;
+    answers: number[] | string[];
     questionDifficulty: Difficulty;
     answerFormat?: AnswerFormat;
 };
@@ -28,22 +28,24 @@ export function useQuestionCardSeries(origin: string, totalQuestions: number, pa
         return [];
     });
     const [currentIndex, setCurrentIndex] = useState(0);
-    const [selected, setSelected] = useState<number | null>(null);
+    const [selected, setSelected] = useState<number | string | null>(null);
     const [score, setScore] = useState(0);
     const [showFinalScreen, setShowFinalScreen] = useState(false);
     const [finished, setFinished] = useState(false);
     const [difficulty, setDifficulty] = useState<Difficulty>(initialDifficulty || 'Easy');
     const [started, setStarted] = useState(false);
+    const currentQuestion = questions[currentIndex];
 
-    const handleSelect = useCallback((opt: number) => {
+    const handleSelect = useCallback((opt: number | string) => {
         keypads.forEach(x => x.disable());
         setSelected(opt);
+        console.log(`opt: ${opt} vs currentQuestion.answer: ${currentQuestion.answer}, ${opt == currentQuestion.answer}`)
         // eslint-disable-next-line eqeqeq
         if (opt == currentQuestion.answer) {
             console.log(`so +1 score`);
             setScore((prev) => prev + 1);
         }
-    }, []);
+    }, [currentQuestion]);
 
     const decimalKeypad = useDecimalKeypad(handleSelect);
     const romanKeypad = useRomanKeypad(handleSelect, false);
@@ -68,8 +70,6 @@ export function useQuestionCardSeries(origin: string, totalQuestions: number, pa
         setStarted(false);
     }, []);
 
-    const currentQuestion = questions[currentIndex];
-
 
     const handleNext = () => {
         keypads.forEach(key => key.handleReset());
@@ -86,10 +86,10 @@ export function useQuestionCardSeries(origin: string, totalQuestions: number, pa
         }
     };
 
-    const theKeyPadButton = (value: number) => {
+    const theKeyPadButton = (value: number | string) => {
         return <Button type="primary" disabled={selected !== null} block
                        onClick={() => handleSelect(value)}>
-            Submit
+            Submit--submit seems not to work
         </Button>
 
     }
@@ -103,10 +103,14 @@ export function useQuestionCardSeries(origin: string, totalQuestions: number, pa
                 </div>;
                 break;
             case "RomanNumeralInputWithHint":
-                showKeypad = romanKeypadWithHint.Pad();
+                showKeypad = <div>{romanKeypadWithHint.Pad()}
+                    {theKeyPadButton(decimalKeypad.theValue)}
+                </div>;
                 break;
             case "RomanNumeralInput":
-                showKeypad = romanKeypad.Pad();
+                showKeypad = <div>{romanKeypad.Pad()}
+                    {theKeyPadButton(decimalKeypad.theValue)}
+                </div>;
                 break;
         }
     }
@@ -218,7 +222,8 @@ export function useQuestionCardSeries(origin: string, totalQuestions: number, pa
                             <div style={{minHeight: 140, paddingTop: 8}}>
                                 {selected !== null && (
                                     <>
-                                        {selected === currentQuestion.answer ? (
+                                        {/* eslint-disable-next-line eqeqeq */}
+                                        {selected == currentQuestion.answer ? (
                                             <Text type="success">✅ Correct!</Text>
                                         ) : (
                                             <Text type="danger">
