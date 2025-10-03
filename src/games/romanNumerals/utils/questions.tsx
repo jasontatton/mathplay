@@ -328,9 +328,8 @@ export function makeRNQuestionBank(toMake: number, difficulty: Difficulty): Ques
 //handle submit on keypad, handle disabvle changes post answer shown
 //focus on decToRoman
 
-//TODO: finish questions, add input selector instead of
-// on easy mode input selector is to show the answer typed in, not for medium and the other one
-// explain function for decimal to roman numerals
+//TODO:
 // add trophies progression,
 // add highscore mode
+
 // see if we can generalize to rounding

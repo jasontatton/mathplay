@@ -2,7 +2,7 @@ import React, {useCallback, useState} from 'react';
 import {Route, Routes} from "react-router-dom";
 import {ButtonPanel} from "../../navigation/ButtonPanel";
 import wip from "../../assets/wip.webp";
-import {Button, Card, Layout, Modal, Progress, Radio, Space, Typography} from "antd";
+import {Button, Card, Layout, Progress, Space, Typography} from "antd";
 import "antd/dist/reset.css";
 import {TrophyOutlined} from "@ant-design/icons";
 import {useQuestionCardSeries} from "../../common/QuestionCardSeries";
@@ -21,12 +21,18 @@ interface Trophy {
 }
 
 const initialTrophies: Trophy[] = [
-    {id: 1, name: "Bronze Trophy", earned: false},
-    {id: 2, name: "Silver Trophy", earned: false},
-    {id: 3, name: "Gold Trophy", earned: false},
+    {id: 1, name: "Easy Trophy", earned: false},
+    {id: 2, name: "Easy Trophy", earned: false},
+    {id: 3, name: "Easy Trophy", earned: false},
+    {id: 4, name: "Medium Trophy", earned: false},
+    {id: 5, name: "Medium Trophy", earned: false},
+    {id: 6, name: "Medium Trophy", earned: false},
+    {id: 7, name: "Hard Trophy", earned: false},
+    {id: 8, name: "Hard Trophy", earned: false},
+    {id: 9, name: "Hard Trophy", earned: false},
 ];
 
-export default function App() {
+export function App() {
     const [trophies, setTrophies] = useState<Trophy[]>(initialTrophies);
     const [currentLevel, setCurrentLevel] = useState<Difficulty>("easy");
     const [isLevelModalVisible, setIsLevelModalVisible] = useState(false);
@@ -58,7 +64,7 @@ export default function App() {
                 </Title>
             </Header>
             <Content style={{padding: "20px"}}>
-                <Card title="Your Trophies" bordered={false}>
+                <Card title="Progression" bordered={false}>
                     <Space style={{marginBottom: 20}}>
                         {trophies.map(t => (
                             <div key={t.id} style={{textAlign: "center"}}>
@@ -92,26 +98,6 @@ export default function App() {
                 </Card>
             </Content>
 
-            <Modal
-                title={`Play ${currentLevel} level`}
-                open={isLevelModalVisible}
-                onCancel={() => setIsLevelModalVisible(false)}
-                footer={[
-                    <Button onClick={() => setIsLevelModalVisible(false)}>Cancel</Button>,
-                    <Button type="primary" onClick={handleCompleteLevel}>
-                        Complete Level
-                    </Button>
-                ]}
-            >
-                {/* For simplicity, questions aren't implemented here */}
-                <p>Here you would show questions for the "{currentLevel}" difficulty.</p>
-                <p>Quiz content could vary based on difficulty.</p>
-                <Radio.Group>
-                    <Radio value={1}>Answer 1</Radio>
-                    <Radio value={2}>Answer 2</Radio>
-                    <Radio value={3}>Answer 3</Radio>
-                </Radio.Group>
-            </Modal>
         </Layout>
     );
 }
@@ -125,16 +111,17 @@ const RomanNumeralsHome: React.FC = () => {
     }/>;
 }
 
-const QUESTIOB_PER_ROUND = 5;
+const QUESTIONS_PER_ROUND = 5;
 const PASS_MARK = 90; // A*
 
 export function Stages() {
 
     const questionProvider = useCallback(() => {
-        return makeRNQuestionBank(QUESTIOB_PER_ROUND, 'Easy');
+        return makeRNQuestionBank(QUESTIONS_PER_ROUND, 'Easy');
     }, []);
 
-    const questionSeries = useQuestionCardSeries('Stage', QUESTIOB_PER_ROUND, PASS_MARK, questionProvider, 'Easy');
+    const questionSeries = useQuestionCardSeries('Stage', QUESTIONS_PER_ROUND, PASS_MARK, questionProvider, 'Easy');
+
 
     return (
         <div style={{padding: 5}}>
