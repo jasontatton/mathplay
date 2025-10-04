@@ -1,15 +1,12 @@
-import React, {useState} from "react";
+import React, {useCallback} from "react";
 import {Difficulty, Question, useQuestionCardSeries} from "./QuestionCardSeries";
-import {Card, Col, Layout, Progress, Row, Typography} from "antd";
+import {Card, Col, Progress, Row} from "antd";
 import {LockOutlined, TrophyOutlined} from "@ant-design/icons";
 import useLocalStorageState from "use-local-storage-state";
 import ConfirmButton from "./ConfirmationButton";
 
-const {Header, Content} = Layout;
-const {Title, Text} = Typography;
 
-
-export const QUESTIONS_PER_ROUND = 5;
+export const QUESTIONS_PER_ROUND = 1;
 export const PASS_MARK = 90; // A*
 
 
@@ -34,7 +31,7 @@ const initialTrophies: Trophy[][] = [[
 ];
 
 
-export function useTrophyPanel(name: string) {
+export function useTrophyPanel(name: string, restartGameCallback: (difficulty: Difficulty | undefined) => void) {
     const [trophies, setTrophies] = useLocalStorageState<Trophy[][]>(`useTrophyPanel-${name}`, {
         defaultValue: initialTrophies,
     });
@@ -51,9 +48,15 @@ export function useTrophyPanel(name: string) {
     const flatTrophies = trophies.flat();
     const earnedCount = flatTrophies.filter((t) => t.earned).length;
 
-    const earnNextTrophy = () => {
-        console.log('earn next');
+    const startNextGame = useCallback(() => {
+        const flat = trophies.flat();
+        const idx = flat.findIndex((t) => t.isNext);
 
+        restartGameCallback(flat[idx].difficulty);
+    }, [trophies]);
+
+    const earnNextTrophy = useCallback(() => {
+        const flatTrophies = trophies.flat();
         const nextIndex = flatTrophies.findIndex((t) => !t.earned);
         if (nextIndex === -1) return; // all earned
 
@@ -72,7 +75,7 @@ export function useTrophyPanel(name: string) {
         }
 
         setTrophies(newTrophies);
-    };
+    }, [trophies]);
 
     const Panel = () => {
         return <Card
@@ -87,7 +90,7 @@ export function useTrophyPanel(name: string) {
                             <Card
                                 size="small"
                                 hoverable
-                                onClick={trophy.isNext ? earnNextTrophy : undefined}
+                                onClick={trophy.isNext ? startNextGame : undefined}
                                 style={{
                                     textAlign: "center",
                                     backgroundColor: trophy.earned ? "#fffbe6" : "#f0f0f0",
@@ -97,7 +100,6 @@ export function useTrophyPanel(name: string) {
                                 {trophy.earned ? (
                                     <TrophyOutlined style={{fontSize: 36, color: "#faad14"}}/>
                                 ) : (
-
                                     trophy.isNext ?
                                         <TrophyOutlined style={{fontSize: 36, color: "#aaa"}}/>
                                         : <LockOutlined style={{fontSize: 36, color: "#aaa"}}/>
@@ -125,24 +127,23 @@ export function useTrophyPanel(name: string) {
         </Card>;
     };
 
-    return {Panel};
+    return {Panel, earnNextTrophy};
 }
-
 
 type StagesProps = {
     name: string;
-    questionProvider: () => Question[];
+    questionProvider: (toMake: number, difficulty: Difficulty) => Question[];
 };
 
 export function Stages({name, questionProvider}: StagesProps) {
-    const [difficulty, setDifficulty] = useState<Difficulty>('Easy');
-    const trophyPanel = useTrophyPanel(name);
-
     const questionSeries = useQuestionCardSeries('Stage', QUESTIONS_PER_ROUND, PASS_MARK, questionProvider, 'Easy');
-    
+
+    const trophyPanel = useTrophyPanel(name, questionSeries.restartGameCallback);
+
+
     return (
         <div style={{padding: 5}}>
-            {questionSeries.finished ? trophyPanel.Panel() : questionSeries.GameRound()}
+            {questionSeries.finished ? trophyPanel.Panel() : questionSeries.GameRound(trophyPanel.earnNextTrophy)}
         </div>
     );
 }

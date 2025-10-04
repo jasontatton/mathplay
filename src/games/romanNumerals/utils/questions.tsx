@@ -268,6 +268,9 @@ function randomBiasedNumber(maxValue: number, bias: number): number {
 }
 
 export function makeRNQuestionBank(toMake: number, difficulty: Difficulty): Question[] {
+
+    console.log(`makeRNQuestionBank: ${toMake} vs ${difficulty}`)
+
     const [scalarLow, scalarHigh, _] = difficultyToScalar[difficulty];
 
     return rangeNInt(scalarLow, scalarHigh, toMake).map(diff => {

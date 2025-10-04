@@ -20,10 +20,13 @@ export type Question = {
 export type Difficulty = 'Easy' | 'Medium' | 'Hard';
 export type AnswerFormat = 'DecimalInput' | 'RomanNumeralInput' | 'RomanNumeralInputWithHint';
 
-export function useQuestionCardSeries(origin: string, totalQuestions: number, passMark: number, questionProvider: (difficulty: Difficulty) => Question[], initialDifficulty: Difficulty | undefined) {
+export function useQuestionCardSeries(origin: string, totalQuestions: number, passMark: number, questionProvider: (toMake: number, difficulty: Difficulty) => Question[], initialDifficulty: Difficulty | undefined) {
+
+    console.log(`initialDifficulty: ${initialDifficulty}`);
+
     const [questions, setQuestions] = useState<Question[]>(() => {
         if (initialDifficulty !== undefined) {
-            return questionProvider(initialDifficulty);
+            return questionProvider(totalQuestions, initialDifficulty);
         }
         return [];
     });
@@ -54,10 +57,10 @@ export function useQuestionCardSeries(origin: string, totalQuestions: number, pa
     const keypads = [decimalKeypad, romanKeypad, romanKeypadWithHint];
 
 
-    const restartGameCallback = useCallback(() => {
-        if (initialDifficulty !== undefined) {
-            setDifficulty(initialDifficulty);
-            setQuestions(questionProvider(initialDifficulty));
+    const restartGameCallback = useCallback((difficulty: Difficulty | undefined) => {
+        if (difficulty !== undefined) {
+            setDifficulty(difficulty);
+            setQuestions(questionProvider(totalQuestions, difficulty));
         } else {
             setQuestions([]);
         }
@@ -75,7 +78,7 @@ export function useQuestionCardSeries(origin: string, totalQuestions: number, pa
         keypads.forEach(key => key.handleReset());
         if ((currentIndex + 1) > questions.length) {
             // we need more questions...
-            setQuestions((prev) => [...prev, ...questionProvider(difficulty)]);
+            setQuestions((prev) => [...prev, ...questionProvider(1, difficulty)]);
         }
 
         setSelected(null);
@@ -101,7 +104,7 @@ export function useQuestionCardSeries(origin: string, totalQuestions: number, pa
         }
     }
 
-    const GameRound = () => {
+    const GameRound = (onLevelPass: () => void) => {
         if (initialDifficulty === undefined && !started) {
             return (
                 <div
@@ -128,7 +131,7 @@ export function useQuestionCardSeries(origin: string, totalQuestions: number, pa
                             </Select>
                             <Button type="primary" block onClick={() => {
 
-                                setQuestions(questionProvider(difficulty))
+                                setQuestions(questionProvider(totalQuestions, difficulty))
                                 setStarted(true);
 
                             }}>
@@ -239,12 +242,15 @@ export function useQuestionCardSeries(origin: string, totalQuestions: number, pa
                             <Title level={3}>All {origin} questions answered!</Title>
                             <Text>{victoryText}</Text>
                             <Button disabled={score === totalQuestions} type="primary" block
-                                    onClick={restartGameCallback}
+                                    onClick={() => restartGameCallback(difficulty)}
                                     icon={<ReloadOutlined/>}>
                                 Try Again
                             </Button>
                             <Button type="primary" block onClick={() => {
-                                restartGameCallback();
+                                if (score === totalQuestions) {
+                                    onLevelPass();
+                                }
+                                restartGameCallback(difficulty);
                                 setFinished(true);
                             }} icon={<StepBackwardOutlined/>}>
                                 Back

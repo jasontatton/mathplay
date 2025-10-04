@@ -1,5 +1,6 @@
 import React, {useState} from "react";
 import {Button, Modal} from "antd";
+import type {ButtonType} from "antd/es/button/buttonHelpers";
 
 interface ConfirmButtonProps {
     label?: string;
@@ -29,7 +30,7 @@ const ConfirmButton: React.FC<ConfirmButtonProps> = ({
 
     return (
         <>
-            <Button type={type} danger={danger} onClick={showModal}>
+            <Button type={type as ButtonType} danger={danger} onClick={showModal}>
                 {label}
             </Button>
 
