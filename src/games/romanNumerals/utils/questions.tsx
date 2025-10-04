@@ -63,6 +63,7 @@ function derivedHowHardToAnswerRange() {
 
 const howHardToAnswerRange: Record<number, [number, number, AnswerRange]> = derivedHowHardToAnswerRange()
 
+// eslint-disable-next-line
 const [hardLowerBound, hardUpperBound, _] = difficultyToScalar['Hard']
 
 function rangeNInt(a: number, b: number, n: number): number[] {
@@ -227,6 +228,7 @@ function derive3BogusAnswers(answer: number): number[] {
     function genWithRetry(func: () => number) {
         let attempt = func()
         let cnt = 0;
+        // eslint-disable-next-line eqeqeq
         while (attempt <= 0 || attempt == answer || attempt > 3999) {
             attempt = func()
             if (cnt++ > max_attempts) {
@@ -268,30 +270,33 @@ function randomBiasedNumber(maxValue: number, bias: number): number {
 }
 
 export function makeRNQuestionBank(toMake: number, difficulty: Difficulty): Question[] {
+    // eslint-disable-next-line
     const [scalarLow, scalarHigh, _] = difficultyToScalar[difficulty];
 
     return rangeNInt(scalarLow, scalarHigh, toMake).map(diff => {
         const qq = makeQuestion(diff);
-
+        let ret: Question;
         switch (qq.qType) {
             case "decToRoman":
-                return {
+                ret = {
                     question: `What is this as a roman numeral: ${qq.answer}`,
                     explain: explainDecimalToRoman(qq.answer),
                     answer: decimalToRoman(qq.answer) || "?",
                     answers: qq.multichoice ? shuffle([...derive3BogusAnswers(qq.answer), qq.answer].map(x => (decimalToRoman(x) || "?"))) : [],
                     questionDifficulty: difficulty,
                     answerFormat: qq.multichoice ? undefined : (difficulty === 'Easy' ? 'RomanNumeralInputWithHint' : 'RomanNumeralInput'),
-                }
+                };
+                break;
             case "romanToDec":
-                return {
+                ret = {
                     question: `What is this as a decimal: ${decimalToRoman(qq.answer)}`,
                     explain: explainRomanBreakdown(decimalToRoman(qq.answer) as string),
                     answer: qq.answer,
                     answers: qq.multichoice ? shuffle([...derive3BogusAnswers(qq.answer), qq.answer]) : [],
                     questionDifficulty: difficulty,
                     answerFormat: qq.multichoice ? undefined : 'DecimalInput'
-                }
+                };
+                break;
             case "romanPlus":
                 const ans = qq.answer;
                 // harder questions have answers which have lhs and rhs which are closer to 50% of the answer
@@ -313,15 +318,17 @@ export function makeRNQuestionBank(toMake: number, difficulty: Difficulty): Ques
                     ...explainDecimalToRoman(qq.answer).map(x => ` ${x}`).map(x => `• ${x}`)
                 ]
 
-                return {
+                ret = {
                     question: `What is ${decimalToRoman(lhs)} + ${decimalToRoman(rhs)} as a roman Numeral?`,
                     explain,
                     answer: decimalToRoman(qq.answer) || "?",
                     answers: qq.multichoice ? shuffle([...derive3BogusAnswers(qq.answer), qq.answer].map(x => (decimalToRoman(x) || "?"))) : [],
                     questionDifficulty: difficulty,
                     answerFormat: qq.multichoice ? undefined : (difficulty === 'Easy' ? 'RomanNumeralInputWithHint' : 'RomanNumeralInput'),
-                }
+                };
+                break;
         }
+        return ret;
     });
 }
 
