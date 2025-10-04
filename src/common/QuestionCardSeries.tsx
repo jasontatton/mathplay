@@ -20,7 +20,7 @@ export type Question = {
 export type Difficulty = 'Easy' | 'Medium' | 'Hard';
 export type AnswerFormat = 'DecimalInput' | 'RomanNumeralInput' | 'RomanNumeralInputWithHint';
 
-export function useQuestionCardSeries(origin: string, totalQuestions: number, passMark: number, questionProvider: (toMake: number, difficulty: Difficulty) => Question[], initialDifficulty: Difficulty | undefined) {
+export function useQuestionCardSeries(origin: string, totalQuestions: number, passMark: number, questionProvider: (_toMake: number, _difficulty: Difficulty) => Question[], initialDifficulty: Difficulty | undefined) {
     const [questions, setQuestions] = useState<Question[]>(() => {
         if (initialDifficulty !== undefined) {
             return questionProvider(totalQuestions, initialDifficulty);

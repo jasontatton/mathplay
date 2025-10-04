@@ -31,7 +31,7 @@ const initialTrophies: Trophy[][] = [[
 ];
 
 
-export function useTrophyPanel(name: string, restartGameCallback: (difficulty: Difficulty | undefined) => void) {
+export function useTrophyPanel(name: string, restartGameCallback: (_difficulty: Difficulty | undefined) => void) {
     const [trophies, setTrophies] = useLocalStorageState<Trophy[][]>(`useTrophyPanel-${name}`, {
         defaultValue: initialTrophies,
     });
@@ -132,7 +132,7 @@ export function useTrophyPanel(name: string, restartGameCallback: (difficulty: D
 
 type StagesProps = {
     name: string;
-    questionProvider: (toMake: number, difficulty: Difficulty) => Question[];
+    questionProvider: (_toMake: number, _difficulty: Difficulty) => Question[];
 };
 
 export function Stages({name, questionProvider}: StagesProps) {
