@@ -31,7 +31,7 @@ export function useQuestionCardSeries(origin: string, totalQuestions: number, pa
     const [selected, setSelected] = useState<number | string | null>(null);
     const [score, setScore] = useState(0);
     const [showFinalScreen, setShowFinalScreen] = useState(false);
-    const [finished, setFinished] = useState(false);
+    const [finished, setFinished] = useState(true);
     const [difficulty, setDifficulty] = useState<Difficulty>(initialDifficulty || 'Easy');
     const [started, setStarted] = useState(false);
     const currentQuestion = questions[currentIndex];
@@ -144,7 +144,6 @@ export function useQuestionCardSeries(origin: string, totalQuestions: number, pa
 
         const markPct = (score / totalQuestions * 100.);
         const victoryText = `Your score: ${score} / ${totalQuestions} (That's ${markPct.toFixed(0)}%) ${markPct >= passMark ? 'Stage complete!' : ` - pass mark is ${passMark}% or above, try again!`}`;
-
 
         return (
             <div
