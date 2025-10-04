@@ -7,7 +7,7 @@ import ConfirmButton from "./ConfirmationButton";
 
 
 export const QUESTIONS_PER_ROUND = 10;
-export const PASS_MARK = 90; // A*
+export const PASS_MARK = 80; // A
 
 
 interface Trophy {
