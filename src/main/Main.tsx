@@ -3,8 +3,9 @@ import {Route, Routes, useLocation, useNavigate} from 'react-router-dom';
 import {Button, Layout} from 'antd';
 import plMaze from "../assets/plMaze.jpg";
 import books from "../assets/books.webp";
+import rnImg from "../assets/romanNumerals.jpg";
 import PlaceValueMaze from "../games/placeValue/placeValueMaze";
-import {HighScore, RomanNumerals, Stages} from "../games/romanNumerals/romanNumerals";
+import {HighScore, RomanNumerals, RomanNumeralStages} from "../games/romanNumerals/romanNumerals";
 import {Content, Footer, Header} from "antd/es/layout/layout";
 import {Breadcrumbs} from "../navigation/Breadcrumbs";
 import {ButtonPanel} from "../navigation/ButtonPanel";
@@ -16,7 +17,7 @@ export const Home: React.FC = () => {
         <ButtonPanel pButtons={
             [
                 {route: '/placeValue/placeValueMaze', image: plMaze},
-                // {route: '/romanNumerals/romanNumerals', image: rnImg},
+                {route: '/romanNumerals/romanNumerals', image: rnImg},
             ]
         }/>
         <h2>English</h2>
@@ -57,7 +58,7 @@ const Main: React.FC = () => {
                         <Route path="/mathplay" element={<Home/>}/>
                         <Route path="/placeValue/placeValueMaze" element={<PlaceValueMaze/>}/>
                         <Route path="/romanNumerals/romanNumerals" element={<RomanNumerals/>}/>
-                        <Route path="/romanNumerals/romanNumerals/stages" element={<Stages/>}/>
+                        <Route path="/romanNumerals/romanNumerals/stages" element={<RomanNumeralStages/>}/>
                         <Route path="/romanNumerals/romanNumerals/highscore" element={<HighScore/>}/>
                         <Route path="/enlgish/y4readingList" element={<Y4ReadingList/>}/>
                     </Routes>

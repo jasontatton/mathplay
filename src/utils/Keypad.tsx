@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import {Button, Input, Popover, Space, Typography} from "antd";
 import {romanToDecimal} from "../games/romanNumerals/utils/roman";
 
@@ -9,14 +9,11 @@ const romanSymbols = ["I", "V", "X", "L", "C", "D", "M"];
 const decimalSymbols = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
 
 
-type KeyPadProps = {
-    roman: boolean;
-};
-
-export function KeyPad({roman}: KeyPadProps) {
+export function useKeyPad(onSelect: (opt: number | string) => void, roman: boolean, hint: boolean) {
     const [theValue, setTheValue] = useState("");
     const [error, setError] = useState<string | null>(null);
     const [visible, setVisible] = useState(false);
+    const [disabled, setDisabled] = useState(false);
 
     const rtext = roman ? 'Roman numeral' : 'decimal';
 
@@ -50,12 +47,27 @@ export function KeyPad({roman}: KeyPadProps) {
         }
     };
 
-    const handleClear = () => {
+    const handleClear = useCallback(() => {
         setTheValue("");
         setError(null);
-    };
+        setDisabled(false);
+    }, []);
+
+    const handleReset = useCallback(() => {
+        handleClear();
+    }, []);
 
     const symbols = roman ? romanSymbols : decimalSymbols;
+
+    const disable = useCallback(() => {
+        setDisabled(true);
+    }, []);
+
+    function onSubmit() {
+        disable();
+        onSelect(roman ? theValue : Number(theValue));
+        setVisible(false);
+    }
 
     const keypadContent = (
         <div style={{width: 220}}>
@@ -81,9 +93,9 @@ export function KeyPad({roman}: KeyPadProps) {
                 <Button
                     type="primary"
                     block
-                    onClick={() => setVisible(false)}
+                    onClick={onSubmit}
                 >
-                    Close
+                    Submit
                 </Button>
             </Space>
         </div>
@@ -93,53 +105,66 @@ export function KeyPad({roman}: KeyPadProps) {
 
     const isMobile = /Mobi|Android/i.test(navigator.userAgent);
 
-    return (
-        <div style={{padding: 5}}>
-            <Popover
-                content={keypadContent}
-                trigger="click"
-                placement="bottomLeft"
-                open={visible}
-                onOpenChange={(v) => setVisible(v)}
-            >
-                <Input
-                    allowClear
-                    value={theValue}
-                    onChange={handleInputChange}
-                    placeholder={`Enter or build ${rtext}`}
-                    style={{
-                        maxWidth: 300,
-                        color: error ? 'red' : 'black',
-                        borderColor: error ? 'red' : undefined,
-                        boxShadow: error ? '0 0 0 2px rgba(255, 0, 0, 0.2)' : undefined
-                    }}
+    const Pad = () => {
+        return (
+            <div style={{padding: 5}}>
+                <Popover
+                    content={keypadContent}
+                    trigger="click"
+                    placement="bottomLeft"
+                    open={visible}
+                    onOpenChange={(v) => setVisible(v)}
+                >
+                    <Input
+                        allowClear
+                        value={theValue}
+                        onChange={handleInputChange}
+                        placeholder={`Enter or build ${rtext}`}
+                        style={{
+                            maxWidth: 300,
+                            color: error ? 'red' : 'black',
+                            borderColor: error ? 'red' : undefined,
+                            boxShadow: error ? '0 0 0 2px rgba(255, 0, 0, 0.2)' : undefined
+                        }}
 
-                    suffix={
-                        !roman ? undefined :
-                            !isNaN(currentDecimalValue as number) && currentDecimalValue !== null ? (
-                                <span style={{color: '#999'}}>{currentDecimalValue}</span>
-                            ) : (error && '🤢')
-                    }
+                        disabled={disabled}
 
+                        suffix={
+                            (!roman || !hint) ? undefined :
+                                !isNaN(currentDecimalValue as number) && currentDecimalValue !== null ? (
+                                    <span style={{color: '#999'}}>{currentDecimalValue}</span>
+                                ) : (error && '🤢')
+                        }
 
-                    readOnly={isMobile} // stops keyboard
-                    onFocus={(e) => {
-                        if (isMobile) e.target.blur();
-                    }}
-                />
-            </Popover>
+                        onPressEnter={onSubmit}
 
-            {/* Validation/Error feedback */}
-            {error && <Text type="danger" style={{display: "block"}}>{error}</Text>}
-        </div>
-    );
+                        readOnly={isMobile} // stops keyboard
+                        onFocus={(e) => {
+                            if (isMobile) e.target.blur();
+                        }}
+                    />
+                </Popover>
+
+                {/* Validation/Error feedback */}
+                {error && <Text type="danger" style={{display: "block"}}>{error}</Text>}
+
+                <Button type="primary" disabled={disabled} block
+                        onClick={() => onSelect(theValue)}>
+                    Submit
+                </Button>
+
+            </div>
+        );
+    };
+
+    return {theValue, handleReset, Pad, disable}
 }
 
-export function Keypad() {
-    return <KeyPad roman={true}/>
+export function useRomanKeypad(onSelect: (opt: number | string) => void, hint: boolean) {
+    return useKeyPad(onSelect, true, hint);
 }
 
 
-export function DecimalKeypad() {
-    return <KeyPad roman={false}/>
+export function useDecimalKeypad(onSelect: (opt: number | string) => void) {
+    return useKeyPad(onSelect, false, false);
 }
