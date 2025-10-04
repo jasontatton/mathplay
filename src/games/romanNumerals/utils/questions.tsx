@@ -233,7 +233,7 @@ function derive3BogusAnswers(answer: number): number[] {
                 break;
             }
         }
-
+        console.log(attempt);
         return attempt;
     }
 
@@ -268,9 +268,6 @@ function randomBiasedNumber(maxValue: number, bias: number): number {
 }
 
 export function makeRNQuestionBank(toMake: number, difficulty: Difficulty): Question[] {
-
-    console.log(`makeRNQuestionBank: ${toMake} vs ${difficulty}`)
-
     const [scalarLow, scalarHigh, _] = difficultyToScalar[difficulty];
 
     return rangeNInt(scalarLow, scalarHigh, toMake).map(diff => {
@@ -298,7 +295,7 @@ export function makeRNQuestionBank(toMake: number, difficulty: Difficulty): Ques
             case "romanPlus":
                 const ans = qq.answer;
                 // harder questions have answers which have lhs and rhs which are closer to 50% of the answer
-                let lhs = randomBiasedNumber(50, diff);
+                let lhs = ans * (randomBiasedNumber(50, diff) / 100);
                 let rhs = ans - lhs;
                 if (randomBoolean()) {
                     //swap
@@ -328,11 +325,5 @@ export function makeRNQuestionBank(toMake: number, difficulty: Difficulty): Ques
     });
 }
 
-//handle submit on keypad, handle disabvle changes post answer shown
-//focus on decToRoman
-
 //TODO:
-// add trophies progression,
 // add highscore mode
-
-// see if we can generalize to rounding

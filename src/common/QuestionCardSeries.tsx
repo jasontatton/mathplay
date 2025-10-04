@@ -21,9 +21,6 @@ export type Difficulty = 'Easy' | 'Medium' | 'Hard';
 export type AnswerFormat = 'DecimalInput' | 'RomanNumeralInput' | 'RomanNumeralInputWithHint';
 
 export function useQuestionCardSeries(origin: string, totalQuestions: number, passMark: number, questionProvider: (toMake: number, difficulty: Difficulty) => Question[], initialDifficulty: Difficulty | undefined) {
-
-    console.log(`initialDifficulty: ${initialDifficulty}`);
-
     const [questions, setQuestions] = useState<Question[]>(() => {
         if (initialDifficulty !== undefined) {
             return questionProvider(totalQuestions, initialDifficulty);
@@ -42,10 +39,8 @@ export function useQuestionCardSeries(origin: string, totalQuestions: number, pa
     const handleSelect = useCallback((opt: number | string) => {
         keypads.forEach(x => x.disable());
         setSelected(opt);
-        console.log(`opt: ${opt} vs currentQuestion.answer: ${currentQuestion.answer}, ${opt == currentQuestion.answer}`)
         // eslint-disable-next-line eqeqeq
         if (opt == currentQuestion.answer) {
-            console.log(`so +1 score`);
             setScore((prev) => prev + 1);
         }
     }, [currentQuestion]);
