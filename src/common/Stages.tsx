@@ -6,7 +6,7 @@ import useLocalStorageState from "use-local-storage-state";
 import ConfirmButton from "./ConfirmationButton";
 
 
-export const QUESTIONS_PER_ROUND = 1;
+export const QUESTIONS_PER_ROUND = 10;
 export const PASS_MARK = 90; // A*
 
 

@@ -3,15 +3,16 @@ import {Route, Routes} from "react-router-dom";
 import {ButtonPanel} from "../../navigation/ButtonPanel";
 import "antd/dist/reset.css";
 import {makeRNQuestionBank} from "./utils/questions";
-import {Stages} from "../../common/Stages";
+import {PASS_MARK, QUESTIONS_PER_ROUND, Stages} from "../../common/Stages";
 import rnImg from "../../assets/romanNumerals.jpg";
+import {useQuestionCardSeries} from "../../common/QuestionCardSeries";
 
 
 const RomanNumeralsHome: React.FC = () => {
     return <ButtonPanel pButtons={
         [
             {route: "/romanNumerals/romanNumerals/stages", image: rnImg},
-            {route: "/romanNumerals/romanNumerals/highscore", image: rnImg},
+            //{route: "/romanNumerals/romanNumerals/highscore", image: rnImg},
         ]
     }/>;
 }
@@ -22,9 +23,11 @@ export function RomanNumeralStages() {
 }
 
 export function HighScore() {
+    const questionSeries = useQuestionCardSeries('Stage', QUESTIONS_PER_ROUND * 2, PASS_MARK, makeRNQuestionBank, undefined);
     return (
         <div style={{padding: 5}}>
-            highscore
+            {questionSeries.GameRound(() => {
+            })}
         </div>
     );
 }
