@@ -294,7 +294,7 @@ export function makeRNQuestionBank(toMake: number, difficulty: Difficulty): Ques
                     answer: qq.answer,
                     answers: qq.multichoice ? shuffle([...derive3BogusAnswers(qq.answer), qq.answer]) : [],
                     questionDifficulty: difficulty,
-                    answerFormat: qq.multichoice ? undefined : 'DecimalInput'
+                    answerFormat: qq.multichoice ? undefined : (difficulty === 'Easy' ? 'DecimalKeypadWithHint' : 'DecimalInput'),
                 };
                 break;
             case "romanPlus":

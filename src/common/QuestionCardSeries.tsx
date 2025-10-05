@@ -18,7 +18,7 @@ export type Question = {
 
 
 export type Difficulty = 'Easy' | 'Medium' | 'Hard';
-export type AnswerFormat = 'DecimalInput' | 'RomanNumeralInput' | 'RomanNumeralInputWithHint';
+export type AnswerFormat = 'DecimalInput' | 'DecimalKeypadWithHint' | 'RomanNumeralInput' | 'RomanNumeralInputWithHint';
 
 export function useQuestionCardSeries(origin: string, totalQuestions: number, passMark: number, questionProvider: (_toMake: number, _difficulty: Difficulty) => Question[], initialDifficulty: Difficulty | undefined) {
     const [questions, setQuestions] = useState<Question[]>(() => {
@@ -45,11 +45,12 @@ export function useQuestionCardSeries(origin: string, totalQuestions: number, pa
         }
     }, [currentQuestion]);
 
-    const decimalKeypad = useDecimalKeypad(handleSelect);
+    const decimalKeypad = useDecimalKeypad(handleSelect, false);
+    const decimalKeypadWithHint = useDecimalKeypad(handleSelect, true);
     const romanKeypad = useRomanKeypad(handleSelect, false);
     const romanKeypadWithHint = useRomanKeypad(handleSelect, true);
 
-    const keypads = [decimalKeypad, romanKeypad, romanKeypadWithHint];
+    const keypads = [decimalKeypad, decimalKeypadWithHint, romanKeypad, romanKeypadWithHint];
 
 
     const restartGameCallback = useCallback((difficulty: Difficulty | undefined) => {
@@ -89,6 +90,9 @@ export function useQuestionCardSeries(origin: string, totalQuestions: number, pa
         switch (currentQuestion.answerFormat) {
             case "DecimalInput":
                 showKeypad = decimalKeypad.Pad();
+                break;
+            case "DecimalKeypadWithHint":
+                showKeypad = decimalKeypadWithHint.Pad();
                 break;
             case "RomanNumeralInputWithHint":
                 showKeypad = romanKeypadWithHint.Pad();
@@ -236,13 +240,13 @@ export function useQuestionCardSeries(origin: string, totalQuestions: number, pa
                         <Space direction="vertical" style={{width: "100%"}} size="large">
                             <Title level={3}>All {origin} questions answered!</Title>
                             <Text>{victoryText}</Text>
-                            <Button disabled={score === totalQuestions} type="primary" block
+                            <Button disabled={markPct >= passMark} type="primary" block
                                     onClick={() => restartGameCallback(difficulty)}
                                     icon={<ReloadOutlined/>}>
                                 Try Again
                             </Button>
                             <Button type="primary" block onClick={() => {
-                                if (score === totalQuestions) {
+                                if (markPct >= passMark) {
                                     onLevelPass();
                                 }
                                 restartGameCallback(difficulty);

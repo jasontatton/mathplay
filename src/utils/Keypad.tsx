@@ -1,6 +1,6 @@
 import React, {useCallback, useState} from 'react';
 import {Button, Input, Popover, Space, Typography} from "antd";
-import {romanToDecimal} from "../games/romanNumerals/utils/roman";
+import {decimalToRoman, romanToDecimal} from "../games/romanNumerals/utils/roman";
 
 const {Text} = Typography;
 
@@ -105,6 +105,7 @@ export function useKeyPad(onSelect: (_opt: number | string) => void, roman: bool
 
     const isMobile = /Mobi|Android/i.test(navigator.userAgent);
 
+
     const Pad = () => {
         return (
             <div style={{padding: 5}}>
@@ -130,10 +131,18 @@ export function useKeyPad(onSelect: (_opt: number | string) => void, roman: bool
                         disabled={disabled}
 
                         suffix={
-                            (!roman || !hint) ? undefined :
-                                !isNaN(currentDecimalValue as number) && currentDecimalValue !== null ? (
-                                    <span style={{color: '#999'}}>{currentDecimalValue}</span>
-                                ) : (error && '🤢')
+                            roman ? (
+                                !hint ? undefined :
+                                    !isNaN(currentDecimalValue as number) && currentDecimalValue !== null ? (
+                                        <span style={{color: '#999'}}>{currentDecimalValue}</span>
+                                    ) : (error && '🤢')
+                            ) : (
+                                !hint ? undefined :
+                                    !isNaN(currentDecimalValue as number) && currentDecimalValue !== null ? (
+                                        <span
+                                            style={{color: '#999'}}>{decimalToRoman(currentDecimalValue) || '🤢'}</span>
+                                    ) : (error && '🤢')
+                            )
                         }
 
                         onPressEnter={onSubmit}
@@ -165,6 +174,6 @@ export function useRomanKeypad(onSelect: (_: number | string) => void, hint: boo
 }
 
 
-export function useDecimalKeypad(onSelect: (_: number | string) => void) {
-    return useKeyPad(onSelect, false, false);
+export function useDecimalKeypad(onSelect: (_: number | string) => void, hint: boolean) {
+    return useKeyPad(onSelect, false, hint);
 }
