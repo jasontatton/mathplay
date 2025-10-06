@@ -1,5 +1,6 @@
 import {Difficulty, Question} from "../../../common/QuestionCardSeries";
 import {decimalToRoman} from "./roman";
+import {randomBoolean, shuffle} from "../../../common/probability";
 
 type DifficultyScaler = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
 
@@ -211,18 +212,8 @@ function explainRomanBreakdown(roman: string): string[] {
     return explanation;
 }
 
-function shuffle<T>(array: T[]): T[] {
-    return array
-        .map(item => ({sortKey: Math.random(), value: item}))
-        .sort((a, b) => a.sortKey - b.sortKey)
-        .map(item => item.value);
-}
-
 const max_attempts = 100; // jsut in case
 
-function randomBoolean(): boolean {
-    return Math.random() < 0.5;
-}
 
 function derive3BogusAnswers(answer: number): number[] {
     function genWithRetry(func: () => number) {
