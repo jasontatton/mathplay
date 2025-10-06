@@ -2,7 +2,9 @@ import React from 'react';
 import {Route, Routes, useLocation, useNavigate} from 'react-router-dom';
 import {Button, Layout} from 'antd';
 import plMaze from "../assets/plMaze.jpg";
-import books from "../assets/books.webp";
+import roundingImg from "../assets/rounding.jpg";
+import booksImg from "../assets/books.webp";
+import moreImg from "../assets/more.webp";
 import rnImg from "../assets/romanNumerals.jpg";
 import PlaceValueMaze from "../games/placeValue/placeValueMaze";
 import {HighScore, RomanNumerals, RomanNumeralStages} from "../games/romanNumerals/romanNumerals";
@@ -10,6 +12,8 @@ import {Content, Footer, Header} from "antd/es/layout/layout";
 import {Breadcrumbs} from "../navigation/Breadcrumbs";
 import {ButtonPanel} from "../navigation/ButtonPanel";
 import Y4ReadingList from "../games/english/y4readingList";
+import MathLinks from "../links/MathLinks";
+import {Rounding} from "../games/rounding/Rounding";
 
 export const Home: React.FC = () => {
     return <>
@@ -18,12 +22,19 @@ export const Home: React.FC = () => {
             [
                 {route: '/placeValue/placeValueMaze', image: plMaze},
                 {route: '/romanNumerals/romanNumerals', image: rnImg},
+                {route: '/rounding/rounding', image: roundingImg},
             ]
         }/>
         <h2>English</h2>
         <ButtonPanel pButtons={
             [
-                {route: '/enlgish/y4readingList', image: books},
+                {route: '/enlgish/y4readingList', image: booksImg},
+            ]
+        }/>
+        <h2>More Resources</h2>
+        <ButtonPanel pButtons={
+            [
+                {route: '/links/mathLinks', image: moreImg},
             ]
         }/>
     </>
@@ -60,7 +71,9 @@ const Main: React.FC = () => {
                         <Route path="/romanNumerals/romanNumerals" element={<RomanNumerals/>}/>
                         <Route path="/romanNumerals/romanNumerals/stages" element={<RomanNumeralStages/>}/>
                         <Route path="/romanNumerals/romanNumerals/highscore" element={<HighScore/>}/>
+                        <Route path="/rounding/rounding" element={<Rounding/>}/>
                         <Route path="/enlgish/y4readingList" element={<Y4ReadingList/>}/>
+                        <Route path="/links/mathLinks" element={<MathLinks/>}/>
                     </Routes>
                 </div>
             </Content>

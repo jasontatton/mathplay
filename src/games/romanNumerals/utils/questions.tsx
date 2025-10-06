@@ -1,5 +1,6 @@
 import {Difficulty, Question} from "../../../common/QuestionCardSeries";
 import {decimalToRoman} from "./roman";
+import {randomBoolean, randomUpToYPercentOff, shuffle} from "../../../common/probability";
 
 type DifficultyScaler = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
 
@@ -211,18 +212,8 @@ function explainRomanBreakdown(roman: string): string[] {
     return explanation;
 }
 
-function shuffle<T>(array: T[]): T[] {
-    return array
-        .map(item => ({sortKey: Math.random(), value: item}))
-        .sort((a, b) => a.sortKey - b.sortKey)
-        .map(item => item.value);
-}
-
 const max_attempts = 100; // jsut in case
 
-function randomBoolean(): boolean {
-    return Math.random() < 0.5;
-}
 
 function derive3BogusAnswers(answer: number): number[] {
     function genWithRetry(func: () => number) {
@@ -235,19 +226,13 @@ function derive3BogusAnswers(answer: number): number[] {
                 break;
             }
         }
-        console.log(attempt);
         return attempt;
     }
 
-    function randomUpToYPercentOff(pct: number, minPctOff?: number): number {
-        const min = answer * (1. + ((minPctOff || 100) / 100.));
-        const max = answer * (1. + (pct / 100.));
-        return Math.floor(Math.random() * (max - min + 1) + min) * (randomBoolean() ? -1 : 1);
-    }
 
     const offByOne = genWithRetry(() => (Math.floor(Math.random() * 4) + 1) * (randomBoolean() ? -1 : 1))
-    const closeOne = genWithRetry(() => randomUpToYPercentOff(20))
-    const sillyOne = genWithRetry(() => randomUpToYPercentOff(150, 50))
+    const closeOne = genWithRetry(() => randomUpToYPercentOff(answer, 20))
+    const sillyOne = genWithRetry(() => randomUpToYPercentOff(answer, 150, 50))
 
     return [offByOne, closeOne, sillyOne]
 

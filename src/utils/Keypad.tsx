@@ -1,4 +1,4 @@
-import React, {useCallback, useState} from 'react';
+import React, {useCallback, useMemo, useState} from 'react';
 import {Button, Input, Popover, Space, Typography} from "antd";
 import {decimalToRoman, romanToDecimal} from "../games/romanNumerals/utils/roman";
 
@@ -15,12 +15,16 @@ export function useKeyPad(onSelect: (_opt: number | string) => void, roman: bool
     const [visible, setVisible] = useState(false);
     const [disabled, setDisabled] = useState(false);
 
-    const rtext = roman ? 'Roman numeral' : 'decimal';
+    const isMobile = useMemo(() => /Mobi|Android/i.test(navigator.userAgent), []);
+
+    const canVibrate = useMemo(() => isMobile && navigator.vibrate, []);
+
+    const theText = roman ? 'Roman numeral' : 'decimal';
 
     const validateRoman = (value: string) => {
         const dec = roman ? romanToDecimal(value) : parseInt(value);
         if (value && dec === null) {
-            setError(`Invalid ${rtext} format`);
+            setError(`Invalid ${theText} format`);
         } else {
             setError(null);
         }
@@ -33,6 +37,11 @@ export function useKeyPad(onSelect: (_opt: number | string) => void, roman: bool
     };
 
     const handleSymbolClick = (symbol: string) => {
+        if (canVibrate) {
+            // Vibrate for 100ms
+            navigator.vibrate(100);
+        }
+
         const newValue = theValue + symbol;
         setTheValue(newValue);
         validateRoman(newValue);
@@ -74,6 +83,7 @@ export function useKeyPad(onSelect: (_opt: number | string) => void, roman: bool
             <Space wrap style={{marginBottom: 8}}>
                 {symbols.map((symbol) => (
                     <Button
+
                         key={symbol}
                         type="default"
                         style={{width: 60, height: 48, fontSize: 20}}
@@ -103,8 +113,6 @@ export function useKeyPad(onSelect: (_opt: number | string) => void, roman: bool
 
     const currentDecimalValue = roman ? romanToDecimal(theValue) : parseInt(theValue);
 
-    const isMobile = /Mobi|Android/i.test(navigator.userAgent);
-
 
     const Pad = () => {
         return (
@@ -120,7 +128,7 @@ export function useKeyPad(onSelect: (_opt: number | string) => void, roman: bool
                         allowClear
                         value={theValue}
                         onChange={handleInputChange}
-                        placeholder={`Enter or build ${rtext}`}
+                        placeholder={`Enter or build ${theText}`}
                         style={{
                             maxWidth: 300,
                             color: error ? 'red' : 'black',
