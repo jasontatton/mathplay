@@ -4,7 +4,9 @@ const paths = ["/",
     "/romanNumerals/romanNumerals",
     "/romanNumerals/romanNumerals/stages",
     "/romanNumerals/romanNumerals/highscore",
-    "/enlgish/y4readingList"] as const;
+    "/enlgish/y4readingList",
+    "/links/mathLinks",
+] as const;
 
 export type Path = typeof paths[number];
 
@@ -17,6 +19,7 @@ export const PathToName: Record<Path, string> = {
     "/romanNumerals/romanNumerals/stages": "Stages",
     "/romanNumerals/romanNumerals/highscore": "Highscore",
     "/enlgish/y4readingList": "Y4 Reading List",
+    "/links/mathLinks": "Math Links",
 };
 
 
