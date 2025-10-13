@@ -14,6 +14,7 @@ import {ButtonPanel} from "../navigation/ButtonPanel";
 import Y4ReadingList from "../games/english/y4readingList";
 import MathLinks from "../links/MathLinks";
 import {Rounding} from "../games/rounding/Rounding";
+import {ThreeBodySimulator} from "../fun/threebody/Simulator";
 
 export const Home: React.FC = () => {
     return <>
@@ -35,6 +36,11 @@ export const Home: React.FC = () => {
         <ButtonPanel pButtons={
             [
                 {route: '/links/mathLinks', image: moreImg},
+            ]
+        }/>   <h2>Fun Stuff</h2>
+        <ButtonPanel pButtons={
+            [
+                {route: '/funStuff/threeBody', image: moreImg},
             ]
         }/>
     </>
@@ -74,6 +80,7 @@ const Main: React.FC = () => {
                         <Route path="/rounding/rounding" element={<Rounding/>}/>
                         <Route path="/enlgish/y4readingList" element={<Y4ReadingList/>}/>
                         <Route path="/links/mathLinks" element={<MathLinks/>}/>
+                        <Route path="/funStuff/threeBody" element={<ThreeBodySimulator/>}/>
                     </Routes>
                 </div>
             </Content>
