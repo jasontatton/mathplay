@@ -23,6 +23,12 @@ const resources: Resource[] = [
         url: "https://www.bbc.co.uk/bitesize/topics/zd2f7nb/articles/zn2y7nb#zqpjg2p",
         image: "https://ichef.bbci.co.uk/images/ic/480xn/p0jwtkxf.png"
     },
+    {
+        title: "3Blue1Brown",
+        description: "Amazing animated math videos",
+        url: "https://www.youtube.com/c/3blue1brown",
+        image: "https://yt3.googleusercontent.com/ytc/AIdro_nFzZFPLxPZRHcE3SSwzdrbuWqfoWYwLAu0_2iO6blQYAU=s160-c-k-c0x00ffffff-no-rj"
+    },
 ];
 
 export default function MathLinks() {
