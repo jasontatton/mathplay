@@ -138,10 +138,15 @@ function generateBogusAnswers(
     return [offByOne, offByBitMore, offByByLot];
 }
 
+type Operation = 'multiply' | 'divide';
+
+
 export function makeQuestionBank(toMake: number, difficulty: Difficulty): Question[] {
 
     return Array.from({length: toMake}, (_) => {
         const unit = weightedSample(difficultyToMultiplier[difficulty]);
+
+
         const unitDigits = Math.log(unit) / Math.log(10) + 1;
         const digits = unitDigits + weightedSample(msbOffsetDist)
 
@@ -157,14 +162,32 @@ export function makeQuestionBank(toMake: number, difficulty: Difficulty): Questi
 
         const multichoice = weightedSample(MULTI_CHOICE_DIST[difficulty]);
 
-        return {
-            question: `round ${num} ${roundingSchemeBlurb[scheme]} ${unitToNearestStr}`,
-            explain: [`${num} rounded ${roundingSchemeBlurb[scheme]} ${unitToNearestStr} is ${answer.toLocaleString('en-US')}`],
-            answer: answer,
-            answers: multichoice ? shuffle([...generateBogusAnswers(num, answer, unit), answer]) : [],
-            questionDifficulty: difficulty,
-            answerFormat: multichoice ? undefined : 'DecimalInput',
-        };
+        const operation: Operation = randomBoolean() ? 'multiply' : 'divide';
+        switch (operation) {
+            case 'multiply':
+                return {
+                    question: `multiply ${num} by ${roundingSchemeBlurb[scheme]} `,
+                    explain: [`${num} x ${roundingSchemeBlurb[scheme]} is ${answer.toLocaleString('en-US')}`],
+                    answer: answer,
+                    answers: multichoice ? shuffle([...generateBogusAnswers(num, answer, unit), answer]) : [],
+                    questionDifficulty: difficulty,
+                    answerFormat: multichoice ? undefined : 'DecimalInput',
+                };
+            case 'divide':
+                return {
+                    question: `round ${num} ${roundingSchemeBlurb[scheme]} ${unitToNearestStr}`,
+                    explain: [`${num} rounded ${roundingSchemeBlurb[scheme]} ${unitToNearestStr} is ${answer.toLocaleString('en-US')}`],
+                    answer: answer,
+                    answers: multichoice ? shuffle([...generateBogusAnswers(num, answer, unit), answer]) : [],
+                    questionDifficulty: difficulty,
+                    answerFormat: multichoice ? undefined : 'DecimalInput',
+                };
+        }
+
+
     });
 
 }
+
+
+
