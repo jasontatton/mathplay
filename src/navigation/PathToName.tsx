@@ -7,6 +7,8 @@ const paths = ["/",
     "/rounding/rounding",
     "/enlgish/y4readingList",
     "/links/mathLinks",
+    "/calculations/calculations",
+    "/calculations/calculations/10s",
 ] as const;
 
 export type Path = typeof paths[number];
@@ -22,6 +24,8 @@ export const PathToName: Record<Path, string> = {
     "/rounding/rounding": "Rounding",
     "/enlgish/y4readingList": "Y4 Reading List",
     "/links/mathLinks": "Math Links",
+    "/calculations/calculations": "Calculations",
+    "/calculations/calculations/10s": "Multiply and Divide by 10's",
 };
 
 
