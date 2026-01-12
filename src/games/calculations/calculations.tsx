@@ -4,7 +4,7 @@ import {ButtonPanel} from "../../navigation/ButtonPanel";
 import "antd/dist/reset.css";
 import {Stages} from "../../common/Stages";
 import x10Img from "../../assets/10x.webp";
-import {makeRNQuestionBank} from "../romanNumerals/utils/questions";
+import {makeQuestionBank} from "./x10/questions";
 
 
 const CalculationsHome: React.FC = () => {
@@ -17,7 +17,7 @@ const CalculationsHome: React.FC = () => {
 
 
 export function Calculations10Stages() {
-    return <Stages name='10s' questionProvider={makeRNQuestionBank}/>;
+    return <Stages name='10s' questionProvider={makeQuestionBank}/>;
 }
 
 
