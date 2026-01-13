@@ -1,7 +1,7 @@
 import {Difficulty} from "./QuestionCardSeries";
 
-export function randomBoolean(): boolean {
-    return Math.random() < 0.5;
+export function randomBoolean(pctTrue?: number): boolean {
+    return Math.random() < (pctTrue === undefined ? 0.5 : (pctTrue / 100.));
 }
 
 export type WeightingProfile<T> = { value: T; weight: number }[];
@@ -20,6 +20,17 @@ export function weightedSample<T>(items: WeightingProfile<T>): T {
     }
     return items[items.length - 1].value;
 }
+
+export function sampleIntRange(a: number, b: number): number {
+    const min = Math.ceil(Math.min(a, b));
+    const max = Math.floor(Math.max(a, b));
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+export function roundUpToNearest10(num: number): number {
+    return Math.ceil(num / 10) * 10;
+}
+
 
 export function shuffle<T>(array: T[]): T[] {
     return array
@@ -52,3 +63,9 @@ export const MULTI_CHOICE_DIST: Record<Difficulty, WeightingProfile<Boolean>> = 
         {value: false, weight: 80},
     ],
 };
+
+
+export function niceRound(x: number) {
+    const factor = 10 ** 4;
+    return Math.round(x * factor) / factor;
+}

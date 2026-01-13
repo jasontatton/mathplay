@@ -2,6 +2,7 @@ import React from 'react';
 import {Route, Routes, useLocation, useNavigate} from 'react-router-dom';
 import {Button, Layout} from 'antd';
 import plMaze from "../assets/plMaze.jpg";
+import calcsImg from "../assets/calcs.jpeg";
 import roundingImg from "../assets/rounding.jpg";
 import booksImg from "../assets/books.webp";
 import moreImg from "../assets/more.webp";
@@ -14,6 +15,7 @@ import {ButtonPanel} from "../navigation/ButtonPanel";
 import Y4ReadingList from "../games/english/y4readingList";
 import MathLinks from "../links/MathLinks";
 import {Rounding} from "../games/rounding/Rounding";
+import {Calculations, Calculations10Stages} from "../games/calculations/calculations";
 
 export const Home: React.FC = () => {
     return <>
@@ -23,6 +25,7 @@ export const Home: React.FC = () => {
                 {route: '/placeValue/placeValueMaze', image: plMaze},
                 {route: '/romanNumerals/romanNumerals', image: rnImg},
                 {route: '/rounding/rounding', image: roundingImg},
+                {route: '/calculations/calculations', image: calcsImg},
             ]
         }/>
         <h2>English</h2>
@@ -74,6 +77,8 @@ const Main: React.FC = () => {
                         <Route path="/rounding/rounding" element={<Rounding/>}/>
                         <Route path="/enlgish/y4readingList" element={<Y4ReadingList/>}/>
                         <Route path="/links/mathLinks" element={<MathLinks/>}/>
+                        <Route path="/calculations/calculations" element={<Calculations/>}/>
+                        <Route path="/calculations/calculations/10s" element={<Calculations10Stages/>}/>
                     </Routes>
                 </div>
             </Content>
