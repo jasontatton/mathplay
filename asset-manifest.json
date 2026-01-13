@@ -1,16 +1,17 @@
 {
   "files": {
     "main.css": "/mathplay/static/css/main.104028b6.css",
-    "main.js": "/mathplay/static/js/main.69d09456.js",
+    "main.js": "/mathplay/static/js/main.bde22030.js",
     "static/media/plMaze.jpg": "/mathplay/static/media/plMaze.b24187a89f808f33ed54.jpg",
     "static/media/books.webp": "/mathplay/static/media/books.4f26f590c69a1ddbbd64.webp",
+    "static/media/10x.webp": "/mathplay/static/media/10x.49a62fc12309912d5f64.webp",
     "static/media/more.webp": "/mathplay/static/media/more.483d74778813e6d6f254.webp",
     "index.html": "/mathplay/index.html",
     "main.104028b6.css.map": "/mathplay/static/css/main.104028b6.css.map",
-    "main.69d09456.js.map": "/mathplay/static/js/main.69d09456.js.map"
+    "main.bde22030.js.map": "/mathplay/static/js/main.bde22030.js.map"
   },
   "entrypoints": [
     "static/css/main.104028b6.css",
-    "static/js/main.69d09456.js"
+    "static/js/main.bde22030.js"
   ]
 }
