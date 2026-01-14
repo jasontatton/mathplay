@@ -15,7 +15,7 @@ import {ButtonPanel} from "../navigation/ButtonPanel";
 import Y4ReadingList from "../games/english/y4readingList";
 import MathLinks from "../links/MathLinks";
 import {Rounding} from "../games/rounding/Rounding";
-import {Calculations, Calculations10Stages} from "../games/calculations/calculations";
+import {Calculations, Calculations10Stages, Calculations10StagesNoDecimal} from "../games/calculations/calculations";
 
 export const Home: React.FC = () => {
     return <>
@@ -79,6 +79,8 @@ const Main: React.FC = () => {
                         <Route path="/links/mathLinks" element={<MathLinks/>}/>
                         <Route path="/calculations/calculations" element={<Calculations/>}/>
                         <Route path="/calculations/calculations/10s" element={<Calculations10Stages/>}/>
+                        <Route path="/calculations/calculations/10sNoDecimal"
+                               element={<Calculations10StagesNoDecimal/>}/>
                     </Routes>
                 </div>
             </Content>

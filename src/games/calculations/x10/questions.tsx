@@ -36,6 +36,22 @@ const difficultyToRange: Record<Difficulty, WeightingProfile<NumRange>> = {
     ],
 };
 
+const difficultyToRangeNoDecimal: Record<Difficulty, WeightingProfile<NumRange>> = {
+    Easy: [
+        {value: small, weight: 50},
+        {value: big, weight: 50},
+    ],
+    Medium: [
+        {value: small, weight: 30},
+        {value: big, weight: 70},
+    ],
+    Hard: [
+        {value: small, weight: 10},
+        {value: big, weight: 90},
+    ],
+};
+
+
 const difficultyToMultiplier: Record<Difficulty, WeightingProfile<Unit>> = {
     Easy: [
         {value: 10, weight: 65},
@@ -95,70 +111,74 @@ function isLaDecimal(num: number): boolean {
     return num % 1 !== 0;
 }
 
+export function makeQuestionBankMaker(withDecimals: boolean) {
+    function makeQuestionBank(toMake: number, difficulty: Difficulty): Question[] {
 
-export function makeQuestionBank(toMake: number, difficulty: Difficulty): Question[] {
+        return Array.from({length: toMake}, (_) => {
+            const multiplier = weightedSample(difficultyToMultiplier[difficulty]);
 
-    return Array.from({length: toMake}, (_) => {
-        const multiplier = weightedSample(difficultyToMultiplier[difficulty]);
+            const range = weightedSample((withDecimals ? difficultyToRange : difficultyToRangeNoDecimal)[difficulty]);
+            //75% bias towards end with zero
 
-        const range = weightedSample(difficultyToRange[difficulty]);
-        //75% bias towards end with zero
+            let sourceNumber: number;
 
-        let sourceNumber: number;
+            const isDecimal = range === decimal;
 
-        const isDecimal = range === decimal;
+            if (isDecimal) {
+                // work backwards
+                const ans = Math.random();
+                sourceNumber = niceRound(ans / multiplier);
+            } else {
+                sourceNumber = sampleIntRange(range[0], range[1]);
 
-        if (isDecimal) {
-            // work backwards
-            const ans = Math.random();
-            sourceNumber = niceRound(ans / multiplier);
-        } else {
-            sourceNumber = sampleIntRange(range[0], range[1]);
-
-            if (randomBoolean(75)) {
-                sourceNumber = niceRound(roundUpToNearest10(sourceNumber));
-            }
-        }
-
-        let answer = sourceNumber * multiplier;
-
-
-        if (randomBoolean()) {
-
-            const formatIfDecimal = (num: number): string => {
-                return isLaDecimal(num) ? num.toFixed(4) : num.toLocaleString('en-US');
+                if (randomBoolean(75)) {
+                    sourceNumber = niceRound(roundUpToNearest10(sourceNumber));
+                }
             }
 
-            return {
-                question: randomBoolean(75) ? `Multiply ${formatIfDecimal(sourceNumber)} by ${formatIfDecimal(multiplier)} ` : `${formatIfDecimal(sourceNumber)} x ${formatIfDecimal(multiplier)} `,
-                explain: [`${formatIfDecimal(sourceNumber)} x ${multiplier} is ${formatIfDecimal(answer)}`],
-                answer: formatIfDecimal(answer),
-                answers: shuffle([...generateBogusAnswers(formatIfDecimal, true, answer, multiplier), formatIfDecimal(answer)]),
-                questionDifficulty: difficulty,
-                answerFormat: undefined,
-            };
-        } else {
-            const temp = answer;
-            answer = sourceNumber;
-            sourceNumber = temp;
+            let answer = sourceNumber * multiplier;
 
-            const dps = Math.max(4, Math.log10(answer)) + Math.log10(multiplier);
-            const formatIfDecimal = (num: number): string => {
-                return isLaDecimal(num) ? num.toFixed(dps) : num.toLocaleString('en-US');
+
+            if (randomBoolean()) {
+
+                const formatIfDecimal = (num: number): string => {
+                    return isLaDecimal(num) ? num.toFixed(4) : num.toLocaleString('en-US');
+                }
+
+                return {
+                    question: randomBoolean(75) ? `Multiply ${formatIfDecimal(sourceNumber)} by ${formatIfDecimal(multiplier)} ` : `${formatIfDecimal(sourceNumber)} x ${formatIfDecimal(multiplier)} `,
+                    explain: [`${formatIfDecimal(sourceNumber)} x ${multiplier} is ${formatIfDecimal(answer)}`],
+                    answer: formatIfDecimal(answer),
+                    answers: shuffle([...generateBogusAnswers(formatIfDecimal, true, answer, multiplier), formatIfDecimal(answer)]),
+                    questionDifficulty: difficulty,
+                    answerFormat: undefined,
+                };
+            } else {
+                const temp = answer;
+                answer = sourceNumber;
+                sourceNumber = temp;
+
+                const dps = Math.max(4, Math.log10(answer)) + Math.log10(multiplier);
+                const formatIfDecimal = (num: number): string => {
+                    return isLaDecimal(num) ? num.toFixed(dps) : num.toLocaleString('en-US');
+                }
+
+                return {
+                    question: randomBoolean(75) ? `Divide ${formatIfDecimal(sourceNumber)} by ${formatIfDecimal(multiplier)} ` : `${formatIfDecimal(sourceNumber)} / ${formatIfDecimal(multiplier)} `,
+                    explain: [`${formatIfDecimal(sourceNumber)} / ${multiplier} is ${formatIfDecimal(answer)}`],
+                    answer: formatIfDecimal(answer),
+                    answers: shuffle([...generateBogusAnswers(formatIfDecimal, false, answer, multiplier), formatIfDecimal(answer)]),
+                    questionDifficulty: difficulty,
+                    answerFormat: undefined,
+                };
             }
+        });
 
-            return {
-                question: randomBoolean(75) ? `Divide ${formatIfDecimal(sourceNumber)} by ${formatIfDecimal(multiplier)} ` : `${formatIfDecimal(sourceNumber)} / ${formatIfDecimal(multiplier)} `,
-                explain: [`${formatIfDecimal(sourceNumber)} / ${multiplier} is ${formatIfDecimal(answer)}`],
-                answer: formatIfDecimal(answer),
-                answers: shuffle([...generateBogusAnswers(formatIfDecimal, false, answer, multiplier), formatIfDecimal(answer)]),
-                questionDifficulty: difficulty,
-                answerFormat: undefined,
-            };
-        }
-    });
+    }
 
+    return makeQuestionBank;
 }
+
 
 
 

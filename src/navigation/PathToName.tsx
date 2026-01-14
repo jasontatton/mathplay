@@ -9,6 +9,7 @@ const paths = ["/",
     "/links/mathLinks",
     "/calculations/calculations",
     "/calculations/calculations/10s",
+    "/calculations/calculations/10sNoDecimal",
 ] as const;
 
 export type Path = typeof paths[number];
@@ -25,7 +26,8 @@ export const PathToName: Record<Path, string> = {
     "/enlgish/y4readingList": "Y4 Reading List",
     "/links/mathLinks": "Math Links",
     "/calculations/calculations": "Calculations",
-    "/calculations/calculations/10s": "Multiply and Divide by 10's",
+    "/calculations/calculations/10s": "Multiply and Divide by 10's (with decimal questions)",
+    "/calculations/calculations/10sNoDecimal": "Multiply and Divide by 10's (no decimals)",
 };
 
 
