@@ -15,8 +15,8 @@ import {ButtonPanel} from "../navigation/ButtonPanel";
 import Y4ReadingList from "../games/english/y4readingList";
 import MathLinks from "../links/MathLinks";
 import {Rounding} from "../games/rounding/Rounding";
-import {ThreeBodySimulator} from "../fun/threebody/Simulator";
 import {Calculations, Calculations10Stages, Calculations10StagesNoDecimal} from "../games/calculations/calculations";
+import ThreeBodySim from "../fun/threebody/Simulator";
 
 export const Home: React.FC = () => {
     return <>
@@ -87,7 +87,7 @@ const Main: React.FC = () => {
                         <Route path="/calculations/calculations/10s" element={<Calculations10Stages/>}/>
                         <Route path="/calculations/calculations/10sNoDecimal"
                                element={<Calculations10StagesNoDecimal/>}/>
-                        <Route path="/funStuff/threeBody" element={<ThreeBodySimulator/>}/>
+                        <Route path="/funStuff/threeBody" element={<ThreeBodySim/>}/>
                     </Routes>
                 </div>
             </Content>
