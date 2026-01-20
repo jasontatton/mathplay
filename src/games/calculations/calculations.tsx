@@ -5,6 +5,7 @@ import "antd/dist/reset.css";
 import {Stages} from "../../common/Stages";
 import x10Img from "../../assets/10x.webp";
 import {makeQuestionBankMaker} from "./x10/questions";
+import LongMultiplicationTable from "./longmult/longmult";
 
 
 const CalculationsHome: React.FC = () => {
@@ -12,6 +13,7 @@ const CalculationsHome: React.FC = () => {
         [
             {route: "/calculations/calculations/10s", image: x10Img},
             {route: "/calculations/calculations/10sNoDecimal", image: x10Img},
+            {route: "/calculations/calculations/longMult", image: x10Img},
         ]
     }/>;
 }
@@ -19,6 +21,10 @@ const CalculationsHome: React.FC = () => {
 
 export function Calculations10Stages() {
     return <Stages name='10s' questionProvider={makeQuestionBankMaker(true)}/>;
+}
+
+export function CalculationsLongMult() {
+    return <LongMultiplicationTable/>;
 }
 
 export function Calculations10StagesNoDecimal() {
