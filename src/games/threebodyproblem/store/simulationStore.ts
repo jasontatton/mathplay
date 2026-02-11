@@ -13,7 +13,6 @@ interface SimulationStore extends SimulationState {
     initialBodies: Body[];
     currentPresetId: string | null;
 
-    // Actions
     setBodies: (_bodies: Body[]) => void;
     updateBody: (_id: string, _updates: Partial<Body>) => void;
     setIsRunning: (_isRunning: boolean) => void;
@@ -29,11 +28,9 @@ interface SimulationStore extends SimulationState {
     setShowStats: (_show: boolean) => void;
     setIntegrationMethod: (_method: 'euler' | 'verlet' | 'rk4') => void;
     loadPreset: (_presetId: string) => void;
-    addTrailPoint: (_bodyId: string, _position: Vector3D) => void;
     clearTrails: () => void;
     reset: () => void;
     updateStats: () => void;
-    incrementTime: (_dt: number) => void;
     exportConfig: () => ExportConfig;
     importConfig: (_config: ExportConfig) => void;
 }
@@ -126,18 +123,6 @@ export const useSimulationStore = create<SimulationStore>()((set, get) => ({
         }
     },
 
-    addTrailPoint: (bodyId, position) =>
-        set((state) => {
-            const trail = state.trails[bodyId] || [];
-            const newTrail = [...trail, {...position}].slice(-state.trailLength);
-            return {
-                trails: {
-                    ...state.trails,
-                    [bodyId]: newTrail,
-                },
-            };
-        }),
-
     clearTrails: () => set({trails: {}}),
 
     reset: () => {
@@ -164,9 +149,6 @@ export const useSimulationStore = create<SimulationStore>()((set, get) => ({
         );
         set({stats});
     },
-
-    incrementTime: (dt) =>
-        set((state) => ({simulationTime: state.simulationTime + dt})),
 
     exportConfig: () => {
         const state = get();

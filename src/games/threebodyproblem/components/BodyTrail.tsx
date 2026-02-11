@@ -1,9 +1,11 @@
 // src/games/threebodyproblem/components/BodyTrail.tsx
 
-import React, {useMemo} from 'react';
+import React, {useState} from 'react';
+import {useFrame} from '@react-three/fiber';
 import {Line} from '@react-three/drei';
 import * as THREE from 'three';
-import {useSimulationStore} from '../store/simulationStore';
+import {getPhysicsState} from '../hooks/useSimulation';
+import {Vector3D} from '../types/types';
 
 interface BodyTrailProps {
     bodyId: string;
@@ -11,14 +13,20 @@ interface BodyTrailProps {
 }
 
 export const BodyTrail: React.FC<BodyTrailProps> = ({bodyId, color}) => {
-    const trail = useSimulationStore((state) => state.trails[bodyId]) || [];
+    const [points, setPoints] = useState<THREE.Vector3[]>([]);
 
-    const points = useMemo(() => {
-        if (trail.length < 2) return null;
-        return trail.map((p) => new THREE.Vector3(p.x, p.y, p.z));
-    }, [trail]);
+    useFrame(() => {
+        const physicsState = getPhysicsState();
+        const trail = physicsState.trails[bodyId] || [];
 
-    if (!points || points.length < 2) return null;
+        if (trail.length >= 2) {
+            // Only update every few frames to reduce overhead
+            const newPoints = trail.map((p: Vector3D) => new THREE.Vector3(p.x, p.y, p.z));
+            setPoints(newPoints);
+        }
+    });
+
+    if (points.length < 2) return null;
 
     return (
         <Line

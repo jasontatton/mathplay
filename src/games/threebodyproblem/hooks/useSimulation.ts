@@ -1,71 +1,102 @@
 // src/games/threebodyproblem/hooks/useSimulation.ts
 
-import {useRef} from 'react';
+import {useEffect, useRef} from 'react';
 import {useFrame} from '@react-three/fiber';
 import {useSimulationStore} from '../store/simulationStore';
 import {stepSimulation} from '../utils/physics';
+import {Body, Vector3D} from '../types/types';
+
+// Store physics state outside React
+const physicsState = {
+    bodies: [] as Body[],
+    trails: {} as Record<string, Vector3D[]>,
+    simulationTime: 0,
+};
 
 export const useSimulation = () => {
     const frameCount = useRef(0);
-    const statsUpdateCounter = useRef(0);
+    const lastStatsUpdate = useRef(0);
+
+    // Sync initial state from store
+    useEffect(() => {
+        const state = useSimulationStore.getState();
+        physicsState.bodies = JSON.parse(JSON.stringify(state.bodies));
+        physicsState.trails = {};
+        physicsState.simulationTime = 0;
+
+        // Subscribe to preset changes
+        const unsubscribe = useSimulationStore.subscribe(
+            (state, prevState) => {
+                // Reset physics state when bodies change externally (preset load, reset)
+                if (state.bodies !== prevState.bodies && !state.isRunning) {
+                    physicsState.bodies = JSON.parse(JSON.stringify(state.bodies));
+                    physicsState.trails = {};
+                    physicsState.simulationTime = 0;
+                }
+            }
+        );
+
+        return unsubscribe;
+    }, []);
 
     useFrame((_, delta) => {
-        // Get state directly without subscribing
-        const state = useSimulationStore.getState();
+        const store = useSimulationStore.getState();
 
-        if (!state.isRunning) return;
+        if (!store.isRunning) {
+            // Sync bodies from store when paused (for manual edits)
+            physicsState.bodies = JSON.parse(JSON.stringify(store.bodies));
+            return;
+        }
 
-        const {
-            bodies,
-            speed,
-            gravitationalConstant,
-            showTrails,
-            integrationMethod,
-            trailLength,
-        } = state;
+        const {speed, gravitationalConstant, integrationMethod, showTrails, trailLength} = store;
 
         // Limit delta to prevent instability
         const clampedDelta = Math.min(delta, 0.05);
 
-        // Run multiple physics steps per frame for accuracy
+        // Run multiple physics steps per frame
         const stepsPerFrame = 10;
         const dt = (clampedDelta * speed) / stepsPerFrame;
 
-        let currentBodies = bodies;
         for (let i = 0; i < stepsPerFrame; i++) {
-            currentBodies = stepSimulation(
-                currentBodies,
+            physicsState.bodies = stepSimulation(
+                physicsState.bodies,
                 dt,
                 gravitationalConstant,
                 integrationMethod
             );
         }
 
-        // Batch updates using direct state mutation via set
-        useSimulationStore.setState({bodies: currentBodies});
+        physicsState.simulationTime += clampedDelta * speed;
 
-        // Increment simulation time
-        useSimulationStore.setState((s) => ({
-            simulationTime: s.simulationTime + clampedDelta * speed,
-        }));
-
-        // Add trail points every few frames
+        // Update trails
         frameCount.current++;
         if (showTrails && frameCount.current % 3 === 0) {
-            useSimulationStore.setState((s) => {
-                const newTrails = {...s.trails};
-                currentBodies.forEach((body) => {
-                    const trail = newTrails[body.id] || [];
-                    newTrails[body.id] = [...trail, {...body.position}].slice(-trailLength);
-                });
-                return {trails: newTrails};
+            physicsState.bodies.forEach((body) => {
+                if (!physicsState.trails[body.id]) {
+                    physicsState.trails[body.id] = [];
+                }
+                physicsState.trails[body.id].push({...body.position});
+                if (physicsState.trails[body.id].length > trailLength) {
+                    physicsState.trails[body.id] = physicsState.trails[body.id].slice(-trailLength);
+                }
             });
         }
 
-        // Update stats every 30 frames
-        statsUpdateCounter.current++;
-        if (statsUpdateCounter.current % 30 === 0) {
-            state.updateStats();
+        // Sync to store less frequently (every 100ms worth of frames)
+        lastStatsUpdate.current += clampedDelta;
+        if (lastStatsUpdate.current > 0.1) {
+            lastStatsUpdate.current = 0;
+
+            // Batch update store
+            useSimulationStore.setState({
+                bodies: physicsState.bodies.map(b => ({...b})),
+                trails: {...physicsState.trails},
+                simulationTime: physicsState.simulationTime,
+            }, false); // false = don't notify subscribers
         }
     });
+
+    return physicsState;
 };
+
+export const getPhysicsState = () => physicsState;
