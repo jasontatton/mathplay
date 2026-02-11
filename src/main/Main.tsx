@@ -5,6 +5,7 @@ import plMaze from "../assets/plMaze.jpg";
 import calcsImg from "../assets/calcs.jpeg";
 import roundingImg from "../assets/rounding.jpg";
 import booksImg from "../assets/books.webp";
+import threeBodyProblemImg from "../assets/the-three-body-problem.webp";
 import moreImg from "../assets/more.webp";
 import rnImg from "../assets/romanNumerals.jpg";
 import PlaceValueMaze from "../games/placeValue/placeValueMaze";
@@ -38,7 +39,7 @@ export const Home: React.FC = () => {
         <h2>Fun Stuff</h2>
         <ButtonPanel pButtons={
             [
-                {route: '/threebodyproblem/threebodyproblem', image: booksImg},
+                {route: '/threebodyproblem/threebodyproblem', image: threeBodyProblemImg},
             ]
         }/>
         <h2>More Resources</h2>

@@ -1,27 +1,28 @@
+// src/games/threebodyproblem/hooks/useSimulation.ts
+
 import {useRef} from 'react';
 import {useFrame} from '@react-three/fiber';
 import {useSimulationStore} from '../store/simulationStore';
 import {stepSimulation} from '../utils/physics';
 
 export const useSimulation = () => {
-    const {
-        bodies,
-        setBodies,
-        isRunning,
-        speed,
-        gravitationalConstant,
-        showTrails,
-        integrationMethod,
-        addTrailPoint,
-        updateStats,
-        incrementTime,
-    } = useSimulationStore();
-
     const frameCount = useRef(0);
     const statsUpdateCounter = useRef(0);
 
     useFrame((_, delta) => {
-        if (!isRunning) return;
+        // Get state directly without subscribing
+        const state = useSimulationStore.getState();
+
+        if (!state.isRunning) return;
+
+        const {
+            bodies,
+            speed,
+            gravitationalConstant,
+            showTrails,
+            integrationMethod,
+            trailLength,
+        } = state;
 
         // Limit delta to prevent instability
         const clampedDelta = Math.min(delta, 0.05);
@@ -40,21 +41,31 @@ export const useSimulation = () => {
             );
         }
 
-        setBodies(currentBodies);
-        incrementTime(clampedDelta * speed);
+        // Batch updates using direct state mutation via set
+        useSimulationStore.setState({bodies: currentBodies});
+
+        // Increment simulation time
+        useSimulationStore.setState((s) => ({
+            simulationTime: s.simulationTime + clampedDelta * speed,
+        }));
 
         // Add trail points every few frames
         frameCount.current++;
-        if (showTrails && frameCount.current % 2 === 0) {
-            currentBodies.forEach((body) => {
-                addTrailPoint(body.id, body.position);
+        if (showTrails && frameCount.current % 3 === 0) {
+            useSimulationStore.setState((s) => {
+                const newTrails = {...s.trails};
+                currentBodies.forEach((body) => {
+                    const trail = newTrails[body.id] || [];
+                    newTrails[body.id] = [...trail, {...body.position}].slice(-trailLength);
+                });
+                return {trails: newTrails};
             });
         }
 
-        // Update stats every 10 frames
+        // Update stats every 30 frames
         statsUpdateCounter.current++;
-        if (statsUpdateCounter.current % 10 === 0) {
-            updateStats();
+        if (statsUpdateCounter.current % 30 === 0) {
+            state.updateStats();
         }
     });
 };
