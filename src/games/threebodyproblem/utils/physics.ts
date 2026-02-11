@@ -1,3 +1,5 @@
+// src/games/threebodyproblem/utils/physics.ts
+
 import {Body, SimulationStats, Vector3D} from '../types/types';
 
 // Vector operations
@@ -58,7 +60,8 @@ export const gravitationalForce = (
     const softening = 0.05;
     const softenedDistance = Math.sqrt(distance * distance + softening * softening);
 
-    const forceMagnitude = (G * body1.mass * body2.mass) / (softenedDistance * softenedDistance);
+    const forceMagnitude =
+        (G * body1.mass * body2.mass) / (softenedDistance * softenedDistance);
     const forceDirection = normalize(r);
 
     return scaleVector(forceDirection, forceMagnitude);
@@ -82,7 +85,7 @@ export const calculateAcceleration = (
     return scaleVector(totalForce, 1 / body.mass);
 };
 
-// Euler integration (simple but less accurate)
+// Euler integration
 export const stepSimulationEuler = (
     bodies: Body[],
     dt: number,
@@ -99,7 +102,7 @@ export const stepSimulationEuler = (
     }));
 };
 
-// Velocity Verlet integration (more stable)
+// Velocity Verlet integration
 export const stepSimulationVerlet = (
     bodies: Body[],
     dt: number,
@@ -133,7 +136,7 @@ export const stepSimulationVerlet = (
     }));
 };
 
-// Runge-Kutta 4th order (most accurate)
+// Runge-Kutta 4th order
 export const stepSimulationRK4 = (
     bodies: Body[],
     dt: number,
@@ -208,56 +211,84 @@ export const stepSimulation = (
     }
 };
 
-// Calculate simulation statistics
+// Calculate simulation statistics - FIXED VERSION
 export const calculateStats = (
     bodies: Body[],
     G: number,
     time: number
 ): SimulationStats => {
+    // Default return for empty/invalid input
     if (!bodies || bodies.length === 0) {
         return {
             totalEnergy: 0,
             kineticEnergy: 0,
             potentialEnergy: 0,
-            totalMomentum: zeroVector(),
-            centerOfMass: zeroVector(),
+            totalMomentum: {x: 0, y: 0, z: 0},
+            centerOfMass: {x: 0, y: 0, z: 0},
             time,
         };
     }
 
-    // Kinetic energy: 0.5 * m * v^2
-    const kineticEnergy = bodies.reduce((sum, body) => {
-        const vSquared = magnitudeSquared(body.velocity);
-        return sum + 0.5 * body.mass * vSquared;
-    }, 0);
+    // Kinetic energy: sum of 0.5 * m * |v|^2
+    let kineticEnergy = 0;
+    for (const body of bodies) {
+        const vx = body.velocity.x;
+        const vy = body.velocity.y;
+        const vz = body.velocity.z;
+        const vSquared = vx * vx + vy * vy + vz * vz;
+        kineticEnergy += 0.5 * body.mass * vSquared;
+    }
 
-    // Potential energy: -G * m1 * m2 / r (sum over all pairs)
+    // Potential energy: sum of -G * m1 * m2 / r for all pairs
     let potentialEnergy = 0;
     for (let i = 0; i < bodies.length; i++) {
         for (let j = i + 1; j < bodies.length; j++) {
-            const r = magnitude(subtractVectors(bodies[i].position, bodies[j].position));
-            // Add softening to match force calculation
+            const dx = bodies[j].position.x - bodies[i].position.x;
+            const dy = bodies[j].position.y - bodies[i].position.y;
+            const dz = bodies[j].position.z - bodies[i].position.z;
+            const distSquared = dx * dx + dy * dy + dz * dz;
             const softening = 0.05;
-            const softenedR = Math.sqrt(r * r + softening * softening);
-            potentialEnergy -= (G * bodies[i].mass * bodies[j].mass) / softenedR;
+            const softenedDist = Math.sqrt(distSquared + softening * softening);
+            potentialEnergy -= (G * bodies[i].mass * bodies[j].mass) / softenedDist;
         }
     }
 
     const totalEnergy = kineticEnergy + potentialEnergy;
 
     // Total momentum: sum of m * v
-    const totalMomentum = bodies.reduce(
-        (sum, body) => addVectors(sum, scaleVector(body.velocity, body.mass)),
-        zeroVector()
-    );
+    let momentumX = 0;
+    let momentumY = 0;
+    let momentumZ = 0;
+    for (const body of bodies) {
+        momentumX += body.mass * body.velocity.x;
+        momentumY += body.mass * body.velocity.y;
+        momentumZ += body.mass * body.velocity.z;
+    }
+    const totalMomentum: Vector3D = {
+        x: momentumX,
+        y: momentumY,
+        z: momentumZ,
+    };
 
     // Center of mass: sum(m * r) / sum(m)
-    const totalMass = bodies.reduce((sum, body) => sum + body.mass, 0);
-    const weightedPositions = bodies.reduce(
-        (sum, body) => addVectors(sum, scaleVector(body.position, body.mass)),
-        zeroVector()
-    );
-    const centerOfMass = totalMass > 0 ? scaleVector(weightedPositions, 1 / totalMass) : zeroVector();
+    let totalMass = 0;
+    let comX = 0;
+    let comY = 0;
+    let comZ = 0;
+    for (const body of bodies) {
+        totalMass += body.mass;
+        comX += body.mass * body.position.x;
+        comY += body.mass * body.position.y;
+        comZ += body.mass * body.position.z;
+    }
+    const centerOfMass: Vector3D =
+        totalMass > 0
+            ? {
+                x: comX / totalMass,
+                y: comY / totalMass,
+                z: comZ / totalMass,
+            }
+            : {x: 0, y: 0, z: 0};
 
     return {
         totalEnergy,
