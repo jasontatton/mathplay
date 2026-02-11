@@ -3,7 +3,7 @@
 import {useEffect, useRef} from 'react';
 import {useFrame} from '@react-three/fiber';
 import {useSimulationStore} from '../store/simulationStore';
-import {stepSimulation} from '../utils/physics';
+import {calculateStats, stepSimulation} from '../utils/physics';
 import {Body, Vector3D} from '../types/types';
 
 // Store physics state outside React
@@ -11,6 +11,14 @@ const physicsState = {
     bodies: [] as Body[],
     trails: {} as Record<string, Vector3D[]>,
     simulationTime: 0,
+    fps: 0,
+};
+
+// FPS tracking
+const fpsTracker = {
+    frames: 0,
+    lastTime: performance.now(),
+    fps: 0,
 };
 
 export const useSimulation = () => {
@@ -24,27 +32,52 @@ export const useSimulation = () => {
         physicsState.trails = {};
         physicsState.simulationTime = 0;
 
-        // Subscribe to preset changes
-        const unsubscribe = useSimulationStore.subscribe(
-            (state, prevState) => {
-                // Reset physics state when bodies change externally (preset load, reset)
-                if (state.bodies !== prevState.bodies && !state.isRunning) {
-                    physicsState.bodies = JSON.parse(JSON.stringify(state.bodies));
-                    physicsState.trails = {};
-                    physicsState.simulationTime = 0;
-                }
+        // Subscribe to state changes
+        const unsubscribe = useSimulationStore.subscribe((state, prevState) => {
+            // Reset physics state when bodies change externally (preset load, reset)
+            if (state.bodies !== prevState.bodies && !state.isRunning) {
+                physicsState.bodies = JSON.parse(JSON.stringify(state.bodies));
+                physicsState.trails = {};
+                physicsState.simulationTime = 0;
             }
-        );
+        });
 
         return unsubscribe;
     }, []);
 
     useFrame((_, delta) => {
+        // Update FPS
+        fpsTracker.frames++;
+        const now = performance.now();
+        if (now - fpsTracker.lastTime >= 1000) {
+            fpsTracker.fps = fpsTracker.frames;
+            fpsTracker.frames = 0;
+            fpsTracker.lastTime = now;
+            physicsState.fps = fpsTracker.fps;
+        }
+
         const store = useSimulationStore.getState();
 
         if (!store.isRunning) {
             // Sync bodies from store when paused (for manual edits)
             physicsState.bodies = JSON.parse(JSON.stringify(store.bodies));
+
+            // Still update stats and FPS when paused
+            lastStatsUpdate.current += delta;
+            if (lastStatsUpdate.current > 0.1) {
+                lastStatsUpdate.current = 0;
+
+                const stats = calculateStats(
+                    physicsState.bodies,
+                    store.gravitationalConstant,
+                    physicsState.simulationTime
+                );
+
+                useSimulationStore.setState({
+                    stats,
+                    simulationTime: physicsState.simulationTime,
+                });
+            }
             return;
         }
 
@@ -82,17 +115,24 @@ export const useSimulation = () => {
             });
         }
 
-        // Sync to store less frequently (every 100ms worth of frames)
+        // Sync to store periodically
         lastStatsUpdate.current += clampedDelta;
         if (lastStatsUpdate.current > 0.1) {
             lastStatsUpdate.current = 0;
 
-            // Batch update store
+            // Calculate stats from physics state
+            const stats = calculateStats(
+                physicsState.bodies,
+                gravitationalConstant,
+                physicsState.simulationTime
+            );
+
             useSimulationStore.setState({
-                bodies: physicsState.bodies.map(b => ({...b})),
+                bodies: physicsState.bodies.map((b) => ({...b})),
                 trails: {...physicsState.trails},
                 simulationTime: physicsState.simulationTime,
-            }, false); // false = don't notify subscribers
+                stats,
+            });
         }
     });
 
@@ -100,3 +140,4 @@ export const useSimulation = () => {
 };
 
 export const getPhysicsState = () => physicsState;
+export const getFPS = () => physicsState.fps;
