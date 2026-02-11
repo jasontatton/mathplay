@@ -10,6 +10,7 @@ const paths = ["/",
     "/calculations/calculations",
     "/calculations/calculations/10s",
     "/calculations/calculations/10sNoDecimal",
+    "/threebodyproblem/threebodyproblem",
 ] as const;
 
 export type Path = typeof paths[number];
@@ -28,6 +29,7 @@ export const PathToName: Record<Path, string> = {
     "/calculations/calculations": "Calculations",
     "/calculations/calculations/10s": "Multiply and Divide by 10's (with decimal questions)",
     "/calculations/calculations/10sNoDecimal": "Multiply and Divide by 10's (no decimals)",
+    "/threebodyproblem/threebodyproblem": "Three Body Problem",
 };
 
 
