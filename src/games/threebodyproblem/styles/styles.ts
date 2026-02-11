@@ -2,8 +2,8 @@ import {CSSProperties} from 'react';
 
 export const containerStyle: CSSProperties = {
     display: 'flex',
-    height: '100vh',
-    width: '100vw',
+    height: '85vh',
+    width: '98vw',
     overflow: 'hidden',
 };
 
@@ -24,8 +24,8 @@ export const controlPanelStyle: CSSProperties = {
 export const mobileContainerStyle: CSSProperties = {
     display: 'flex',
     flexDirection: 'column',
-    height: '100vh',
-    width: '100vw',
+    height: '85vh',
+    width: '98vw',
     overflow: 'hidden',
 };
 
