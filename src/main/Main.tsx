@@ -16,6 +16,7 @@ import Y4ReadingList from "../games/english/y4readingList";
 import MathLinks from "../links/MathLinks";
 import {Rounding} from "../games/rounding/Rounding";
 import {Calculations, Calculations10Stages, Calculations10StagesNoDecimal} from "../games/calculations/calculations";
+import {ThreeBodyProblem} from "../games/threebodyproblem/ThreeBodyProblem";
 
 export const Home: React.FC = () => {
     return <>
@@ -32,6 +33,12 @@ export const Home: React.FC = () => {
         <ButtonPanel pButtons={
             [
                 {route: '/enlgish/y4readingList', image: booksImg},
+            ]
+        }/>
+        <h2>Fun Stuff</h2>
+        <ButtonPanel pButtons={
+            [
+                {route: '/threebodyproblem/threebodyproblem', image: booksImg},
             ]
         }/>
         <h2>More Resources</h2>
@@ -75,6 +82,7 @@ const Main: React.FC = () => {
                         <Route path="/romanNumerals/romanNumerals/stages" element={<RomanNumeralStages/>}/>
                         <Route path="/romanNumerals/romanNumerals/highscore" element={<HighScore/>}/>
                         <Route path="/rounding/rounding" element={<Rounding/>}/>
+                        <Route path="/threebodyproblem/threebodyproblem" element={<ThreeBodyProblem/>}/>
                         <Route path="/enlgish/y4readingList" element={<Y4ReadingList/>}/>
                         <Route path="/links/mathLinks" element={<MathLinks/>}/>
                         <Route path="/calculations/calculations" element={<Calculations/>}/>
