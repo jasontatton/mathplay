@@ -14,6 +14,7 @@ import {Content, Footer, Header} from "antd/es/layout/layout";
 import {Breadcrumbs} from "../navigation/Breadcrumbs";
 import {ButtonPanel} from "../navigation/ButtonPanel";
 import Y4ReadingList from "../games/english/y4readingList";
+import Y5ReadingList from "../games/english/y5readingList";
 import MathLinks from "../links/MathLinks";
 import {Rounding} from "../games/rounding/Rounding";
 import {Calculations, Calculations10Stages, Calculations10StagesNoDecimal} from "../games/calculations/calculations";
@@ -34,6 +35,7 @@ export const Home: React.FC = () => {
         <ButtonPanel pButtons={
             [
                 {route: '/enlgish/y4readingList', image: booksImg},
+                {route: '/enlgish/y5readingList', image: booksImg},
             ]
         }/>
         <h2>Fun Stuff</h2>
@@ -85,6 +87,7 @@ const Main: React.FC = () => {
                         <Route path="/rounding/rounding" element={<Rounding/>}/>
                         <Route path="/threebodyproblem/threebodyproblem" element={<ThreeBodyProblem/>}/>
                         <Route path="/enlgish/y4readingList" element={<Y4ReadingList/>}/>
+                        <Route path="/enlgish/y5readingList" element={<Y5ReadingList/>}/>
                         <Route path="/links/mathLinks" element={<MathLinks/>}/>
                         <Route path="/calculations/calculations" element={<Calculations/>}/>
                         <Route path="/calculations/calculations/10s" element={<Calculations10Stages/>}/>
